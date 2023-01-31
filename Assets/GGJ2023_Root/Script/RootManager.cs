@@ -12,7 +12,7 @@ public class RootManager : MonoBehaviour
     [SerializeField] List<RootDrawer> roots;
 
     [Header("Object reference")]
-    [SerializeField] MouseSphereDetecter mouseDetectionSphere;
+    [SerializeField] Transform rootParent;
 
     [Header("Prefab reference")]
     [SerializeField] GameObject rootDrawer;
@@ -105,7 +105,7 @@ public class RootManager : MonoBehaviour
 
     private void BuildNewRoot(Vector3 rootNode, Vector3 headNode)
     {
-        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity);
+        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
         currentRoot = newRoot.GetComponent<RootDrawer>();
         roots.Add(currentRoot);
         currentRoot.CreateNewRootPosition(headNode);
@@ -120,7 +120,7 @@ public class RootManager : MonoBehaviour
         {
             if (Physics.SphereCast(mousePos, radius, Vector3.one, out hit, 10, layerMask))
             {
-                GameObject newRoot = Instantiate(rootDrawer, hit.point, Quaternion.identity);
+                GameObject newRoot = Instantiate(rootDrawer, hit.point, Quaternion.identity, rootParent);
                 currentRoot = newRoot.GetComponent<RootDrawer>();
                 roots.Add(currentRoot);
                 currentRoot.CreateNewRootPosition(mousePos);
@@ -152,7 +152,7 @@ public class RootManager : MonoBehaviour
         {
             Vector3 closetPoint = roots[indexOfClosestRoot].meshCollider.ClosestPoint(mousePos);
             Debug.LogError("Create new root at " + indexOfClosestRoot + " , position : " + closetPoint);
-            GameObject newRoot = Instantiate(rootDrawer, closetPoint, Quaternion.identity);
+            GameObject newRoot = Instantiate(rootDrawer, closetPoint, Quaternion.identity, rootParent);
             currentRoot = newRoot.GetComponent<RootDrawer>();
             roots.Add(currentRoot);
         }
