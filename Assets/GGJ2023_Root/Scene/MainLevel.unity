@@ -379,6 +379,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a967dd55efc8764183465e29a53a5aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMouseSphere: 1
+  mouseSphereRadius: 20
   mainCamera: {fileID: 1403218384}
 --- !u!4 &1337718639
 Transform:

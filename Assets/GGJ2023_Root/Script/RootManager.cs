@@ -30,7 +30,12 @@ public class RootManager : MonoBehaviour
             //BuildRoot();
             //   DetectClosestPointToMouse();
             // currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
-            LinearSearchClosestNodeToMouseAndBuildNewRoot();
+
+            // Algorithm 1: Brute force, not optimized
+            // LinearSearchClosestNodeToMouseAndBuildNewRoot();
+
+            // Algorithm 2: Fixed search area, find nearest root => nearest node within root => build new root
+            OverlapSphereClosestNodeToMouseAndBuildNewRoot();
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -39,35 +44,71 @@ public class RootManager : MonoBehaviour
         }
     }
 
+    private void OverlapSphereClosestNodeToMouseAndBuildNewRoot()
+    {
+        Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
+
+        Collider[] overlappingObjects = Physics.OverlapSphere(mousePos, GameManager.instance.MouseSphereRadius);
+        if (overlappingObjects == null || overlappingObjects.Length == 0)
+        {
+            print("RootManager.OverlapSphere(): No overlapping objects within sphere. Look at SceneView, ensure GameManager.DebugMouseSphere is true.");
+            return;
+        }
+
+        Vector3 closestNode = default;
+        float closestDistance = float.PositiveInfinity;
+        foreach (Collider collider in overlappingObjects)
+        {
+            if (!collider.TryGetComponent<RootDrawer>(out RootDrawer root)) continue;
+
+            print($"Found '{collider.gameObject}'!");
+            Vector3 node = root.FindClosestNode(mousePos);
+            float squareDistance = Vector3.SqrMagnitude(mousePos - node);
+            if (squareDistance < closestDistance)
+            {
+                closestNode = node;
+                closestDistance = squareDistance;
+            }
+        }
+
+        if (closestDistance == float.PositiveInfinity)
+        {
+            print("RootManager.OverlapSphere(): No overlapping objects within sphere. Look at SceneView, ensure GameManager.DebugMouseSphere is true.");
+            return;
+        }
+
+        BuildNewRoot(closestNode, mousePos);
+    }
 
     private void LinearSearchClosestNodeToMouseAndBuildNewRoot()
     {
         Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
 
-        Vector3 closestPoint = default;
+        Vector3 closestNode = default;
         float closestDistance = float.PositiveInfinity;
         foreach (RootDrawer root in roots)
         {
-            foreach (Vector3 point in root.LinePoints)
+            Vector3 node = root.FindClosestNode(mousePos);
+            float squareDistance = Vector3.SqrMagnitude(mousePos - node);
+            if (squareDistance < closestDistance)
             {
-                Vector3 pointGlobalPosition = point + root.transform.position;
-
-                float squareDistance = Vector3.SqrMagnitude(mousePos - pointGlobalPosition);
-                if (squareDistance < closestDistance)
-                {
-                    closestPoint = pointGlobalPosition;
-                    closestDistance = squareDistance;
-                }
+                closestNode = node;
+                closestDistance = squareDistance;
             }
         }
 
         if (closestDistance == float.PositiveInfinity) return;
+        // print($"RootManager.LinearSearchClosestPointToMouse(): Found position: {closestNode}");
 
-        GameObject newRoot = Instantiate(rootDrawer, closestPoint, Quaternion.identity);
+        BuildNewRoot(closestNode, mousePos);
+    }
+
+    private void BuildNewRoot(Vector3 rootNode, Vector3 headNode)
+    {
+        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity);
         currentRoot = newRoot.GetComponent<RootDrawer>();
         roots.Add(currentRoot);
-        currentRoot.CreateNewRootPosition(mousePos);
-        print($"RootManager.LinearSearchClosestPointToMouse(): Found position: {closestPoint}");
+        currentRoot.CreateNewRootPosition(headNode);
     }
 
     private void DetectClosestPointToMouse()

@@ -62,6 +62,28 @@ public class RootDrawer : MonoBehaviour
         meshCollider.sharedMesh = mesh;
     }
 
+    public Vector3 FindClosestNode(Vector3 mouseGlobalPosition, bool returnGlobalPosition = true)
+    {
+        Vector3 closestPoint = default;
+        float closestDistance = float.PositiveInfinity;
+        foreach (Vector3 point in this.linePoints)
+        {
+            Vector3 pointGlobalPosition = point + this.transform.position;
+
+            float squareDistance = Vector3.SqrMagnitude(mouseGlobalPosition - pointGlobalPosition);
+            if (squareDistance < closestDistance)
+            {
+                closestPoint = point;
+                closestDistance = squareDistance;
+            }
+        }
+
+        if (returnGlobalPosition)
+            return closestPoint + this.transform.position;
+
+        return closestPoint;
+    }
+
     private void SmoothPath()
     {
         smoother.Line.positionCount = Curves.Length * SmoothingSections;
