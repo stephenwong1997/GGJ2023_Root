@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(LineRendererSmoother))]
@@ -9,10 +10,15 @@ public class RootDrawer : MonoBehaviour
 
     //[SerializeField] LineRenderer lineRenderer;
     [SerializeField] List<Vector3> linePoints;
+    [SerializeField] List<Vector3> lineIntervalPoints = new List<Vector3>();
     [SerializeField] LineRendererSmoother smoother;
     public MeshCollider meshCollider;
     [SerializeField] float SmoothingLength = 2;
     [SerializeField] int SmoothingSections = 8;
+
+    [Header("Line node interval settings")]
+    [SerializeField] float intervalDistance = 1;
+
     private BezierCurve[] Curves;
 
     public Vector3 GetHeadPoint
@@ -45,10 +51,11 @@ public class RootDrawer : MonoBehaviour
     {
         if (toNewPosition != Vector3.zero)
         {
-            Vector2 offsetPosition = toNewPosition - transform.position;
+            Vector2 localPosition = toNewPosition - transform.position;
 
             //smoother.Line.positionCount++;
-            linePoints.Add(offsetPosition);
+            linePoints.Add(localPosition);
+            AddIntervalPoints(localPosition);
             //smoother.Line.SetPosition(smoother.Line.positionCount - 1, hitObject.point);
             smoother.Line.positionCount = linePoints.Count;
 
@@ -62,11 +69,35 @@ public class RootDrawer : MonoBehaviour
         meshCollider.sharedMesh = mesh;
     }
 
+    private void AddIntervalPoints(Vector3 newPosition)
+    {
+        if (lineIntervalPoints.Count <= 0)
+        {
+            lineIntervalPoints.Add(Vector3.zero);
+        }
+
+        Vector3 previousPosition = lineIntervalPoints.Last();
+
+        int intervalCount = Mathf.FloorToInt(Vector3.Distance(previousPosition, newPosition) / intervalDistance);
+        Vector3 intervalDirection = (newPosition - previousPosition).normalized;
+        Vector3 intervalVector = intervalDistance * intervalDirection;
+
+        for (int i = 0; i < intervalCount; i++)
+        {
+            Vector3 intervalPoint = previousPosition + (i + 1) * intervalVector;
+            lineIntervalPoints.Add(intervalPoint);
+        }
+
+        lineIntervalPoints.Add(newPosition);
+    }
+
     public Vector3 FindClosestNode(Vector3 mouseGlobalPosition, bool returnGlobalPosition = true)
     {
         Vector3 closestPoint = default;
         float closestDistance = float.PositiveInfinity;
-        foreach (Vector3 point in this.linePoints)
+
+        // foreach (Vector3 point in this.linePoints)
+        foreach (Vector3 point in this.lineIntervalPoints)
         {
             Vector3 pointGlobalPosition = point + this.transform.position;
 

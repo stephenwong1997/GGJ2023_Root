@@ -260,10 +260,12 @@ MonoBehaviour:
   linePoints:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  lineIntervalPoints: []
   smoother: {fileID: 5990701483984011470}
   meshCollider: {fileID: 5990701483984011471}
   SmoothingLength: 2
   SmoothingSections: 8
+  intervalDistance: 2
 --- !u!64 &5990701483984011471
 MeshCollider:
   m_ObjectHideFlags: 0
