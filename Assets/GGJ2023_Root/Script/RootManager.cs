@@ -6,13 +6,17 @@ using UnityEngine;
 public class RootManager : MonoBehaviour
 {
     public static RootManager instance;
+
     [Header("Run time reference")]
     [SerializeField] RootDrawer currentRoot;
     [SerializeField] List<RootDrawer> roots;
+
     [Header("Object reference")]
     [SerializeField] MouseSphereDetecter mouseDetectionSphere;
+
     [Header("Prefab reference")]
     [SerializeField] GameObject rootDrawer;
+
     private void Awake()
     {
         if (instance == null)
@@ -25,12 +29,45 @@ public class RootManager : MonoBehaviour
         {
             //BuildRoot();
             //   DetectClosestPointToMouse();
+            // currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
+            LinearSearchClosestNodeToMouseAndBuildNewRoot();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
         }
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
-        //}
+    }
+
+
+    private void LinearSearchClosestNodeToMouseAndBuildNewRoot()
+    {
+        Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
+
+        Vector3 closestPoint = default;
+        float closestDistance = float.PositiveInfinity;
+        foreach (RootDrawer root in roots)
+        {
+            foreach (Vector3 point in root.LinePoints)
+            {
+                Vector3 pointGlobalPosition = point + root.transform.position;
+
+                float squareDistance = Vector3.SqrMagnitude(mousePos - pointGlobalPosition);
+                if (squareDistance < closestDistance)
+                {
+                    closestPoint = pointGlobalPosition;
+                    closestDistance = squareDistance;
+                }
+            }
+        }
+
+        if (closestDistance == float.PositiveInfinity) return;
+
+        GameObject newRoot = Instantiate(rootDrawer, closestPoint, Quaternion.identity);
+        currentRoot = newRoot.GetComponent<RootDrawer>();
+        roots.Add(currentRoot);
+        currentRoot.CreateNewRootPosition(mousePos);
+        print($"RootManager.LinearSearchClosestPointToMouse(): Found position: {closestPoint}");
     }
 
     private void DetectClosestPointToMouse()

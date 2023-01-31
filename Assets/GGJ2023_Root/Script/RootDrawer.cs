@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(LineRendererSmoother))]
 public class RootDrawer : MonoBehaviour
 {
+    public List<Vector3> LinePoints => linePoints;
+
     //[SerializeField] LineRenderer lineRenderer;
     [SerializeField] List<Vector3> linePoints;
     [SerializeField] LineRendererSmoother smoother;
@@ -39,14 +41,14 @@ public class RootDrawer : MonoBehaviour
         //}
     }
 
- 
-
     public void CreateNewRootPosition(Vector3 toNewPosition)
     {
         if (toNewPosition != Vector3.zero)
         {
+            Vector2 offsetPosition = toNewPosition - transform.position;
+
             //smoother.Line.positionCount++;
-            linePoints.Add(toNewPosition);
+            linePoints.Add(offsetPosition);
             //smoother.Line.SetPosition(smoother.Line.positionCount - 1, hitObject.point);
             smoother.Line.positionCount = linePoints.Count;
 
