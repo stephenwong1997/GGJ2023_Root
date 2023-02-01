@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,18 @@ using UnityEngine;
 public class GameSceneUIController : MonoBehaviour
 {
     [SerializeField] GameObject _pauseContainer;
+
+    List<Guid> _tokenList = new List<Guid>();
+
+    private void Start()
+    {
+        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnProgressChangedEvent>((e) => UpdateProgress(e.NormalizedValue)));
+    }
+
+    private void OnDestroy()
+    {
+        MessageHubSingleton.Instance.Unsubscribe(_tokenList);
+    }
 
     public void OnPauseButtonClicked()
     {
@@ -29,4 +42,10 @@ public class GameSceneUIController : MonoBehaviour
     {
         Debug.Log("Quit clicked!");
     }
+
+    private void UpdateProgress(float normalizedValue)
+    {
+
+    }
 }
+

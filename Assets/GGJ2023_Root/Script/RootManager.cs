@@ -27,8 +27,8 @@ public class RootManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //BuildRoot();
-            //   DetectClosestPointToMouse();
+            // BuildRoot();
+            // DetectClosestPointToMouse();
             // currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
 
             // Algorithm 1: Brute force, not optimized
@@ -80,7 +80,7 @@ public class RootManager : MonoBehaviour
         }
 
         print($"closest node {closestNode}");
-        print($"closestRoot.GetLastPoint  {closestRoot.GetLastLineIntervalPoints(true) }");
+        print($"closestRoot.GetLastPoint  {closestRoot.GetLastLineIntervalPoints(true)}");
         if (closestRoot == currentRoot && closestNode == closestRoot.GetLastLineIntervalPoints(true))
         {
             currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
