@@ -4,6 +4,10 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
 
+    /// <summary>
+    /// Progress => The top bar. Increases when the root drinks water.
+    /// </summary>
+    /// <value></value>
     int _currentProgress
     {
         get => m_currentProgress;
@@ -15,7 +19,30 @@ public class DataManager : MonoBehaviour
     }
     int m_currentProgress;
 
+    /// <summary>
+    /// Total Progress => The required total water to drink to complete the level.
+    /// </summary>
     int _totalProgress;
+
+    /// <summary>
+    /// LifeEnergy => The left bar. Increases when the root eats energy. Decreases when the root grows.
+    /// </summary>
+    /// <value></value>
+    int _currentLifeEnergy
+    {
+        get => m_currentLifeEnergy;
+        set
+        {
+            m_currentLifeEnergy = value;
+            OnLifeEnergyChanged();
+        }
+    }
+    int m_currentLifeEnergy;
+
+    /// <summary>
+    /// Total LifeEnergy => The total capacity of life energy to grow root.
+    /// </summary>
+    int _totalLifeEnergy;
 
     private void Awake()
     {
@@ -27,6 +54,7 @@ public class DataManager : MonoBehaviour
         Instance = this;
     }
 
+    #region Progress
     public void SetTotalProgress(int totalProgress)
         => _totalProgress = totalProgress;
 
@@ -46,6 +74,29 @@ public class DataManager : MonoBehaviour
         Debug.Log($"DataManager: Current progress updated ({m_currentProgress}/{_totalProgress} = {normalizedProgress})");
         MessageHubSingleton.Instance.Publish(new OnProgressChangedEvent(m_currentProgress, normalizedProgress));
     }
+    #endregion
+
+    #region LifeEnergy
+    public void SetTotalLifeEnergy(int totalLifeEnergy)
+        => _totalLifeEnergy = totalLifeEnergy;
+
+    public void AddLifeEnergy(int LifeEnergyToAdd)
+    {
+        _currentLifeEnergy += LifeEnergyToAdd;
+    }
+
+    public void ResetLifeEnergy()
+    {
+        _currentLifeEnergy = 0;
+    }
+
+    private void OnLifeEnergyChanged()
+    {
+        float normalizedLifeEnergy = (float)m_currentLifeEnergy / (float)_totalLifeEnergy;
+        Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
+        MessageHubSingleton.Instance.Publish(new OnLifeEnergyChangedEvent(m_currentLifeEnergy, normalizedLifeEnergy));
+    }
+    #endregion
 }
 
 public class OnProgressChangedEvent
@@ -54,6 +105,18 @@ public class OnProgressChangedEvent
     public float NormalizedValue;
 
     public OnProgressChangedEvent(int changedValue, float normalizedValue)
+    {
+        ChangedValue = changedValue;
+        NormalizedValue = normalizedValue;
+    }
+}
+
+public class OnLifeEnergyChangedEvent
+{
+    public int ChangedValue;
+    public float NormalizedValue;
+
+    public OnLifeEnergyChangedEvent(int changedValue, float normalizedValue)
     {
         ChangedValue = changedValue;
         NormalizedValue = normalizedValue;
