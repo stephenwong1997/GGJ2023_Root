@@ -16,7 +16,6 @@ public class LineRendererSmootherEditor : Editor
     private GUIContent SmoothButtonGUIContent = new GUIContent("Smooth Path");
     private GUIContent RestoreDefaultGUIContent = new GUIContent("Restore Default Path");
 
-    private bool ExpandCurves = false;
     private BezierCurve[] Curves;
 
     //private void OnEnable()

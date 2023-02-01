@@ -57,6 +57,7 @@ public class RootManager : MonoBehaviour
 
         Vector3 closestNode = default;
         float closestDistance = float.PositiveInfinity;
+        RootDrawer closestRoot = null;
         foreach (Collider collider in overlappingObjects)
         {
             if (!collider.TryGetComponent<RootDrawer>(out RootDrawer root)) continue;
@@ -68,6 +69,7 @@ public class RootManager : MonoBehaviour
             {
                 closestNode = node;
                 closestDistance = squareDistance;
+                closestRoot = root;
             }
         }
 
@@ -77,9 +79,17 @@ public class RootManager : MonoBehaviour
             return;
         }
 
-        BuildNewRoot(closestNode, mousePos);
+        print($"closest node {closestNode}");
+        print($"closestRoot.GetLastPoint  {closestRoot.GetLastLineIntervalPoints(true) }");
+        if (closestRoot == currentRoot && closestNode == closestRoot.GetLastLineIntervalPoints(true))
+        {
+            currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
+        }
+        else
+        {
+            BuildNewRoot(closestNode, mousePos);
+        }
     }
-
     private void LinearSearchClosestNodeToMouseAndBuildNewRoot()
     {
         Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
@@ -147,7 +157,7 @@ public class RootManager : MonoBehaviour
             }
         }
 
-        float distanceWithClosestRootHead = Vector3.Distance(mousePos, roots[indexOfClosestRoot].GetHeadPoint);
+        float distanceWithClosestRootHead = Vector3.Distance(mousePos, roots[indexOfClosestRoot].GetLastPoint);
         if (closestDistance < distanceWithClosestRootHead) // head is not the closest, create a new root
         {
             Vector3 closetPoint = roots[indexOfClosestRoot].meshCollider.ClosestPoint(mousePos);

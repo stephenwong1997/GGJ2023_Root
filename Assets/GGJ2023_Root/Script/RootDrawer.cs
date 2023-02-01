@@ -9,7 +9,7 @@ public class RootDrawer : MonoBehaviour
     public List<Vector3> LinePoints => linePoints;
 
     //[SerializeField] LineRenderer lineRenderer;
-    [SerializeField] List<Vector3> linePoints;
+    [SerializeField] List<Vector3> linePoints = new List<Vector3>();
     [SerializeField] List<Vector3> lineIntervalPoints = new List<Vector3>();
     [SerializeField] LineRendererSmoother smoother;
     public MeshCollider meshCollider;
@@ -21,9 +21,16 @@ public class RootDrawer : MonoBehaviour
 
     private BezierCurve[] Curves;
 
-    public Vector3 GetHeadPoint
+    public Vector3 GetLastPoint
     {
-        get { return linePoints[linePoints.Count - 1]; }
+        get { return linePoints[^1]; }
+    }
+    public Vector3 GetLastLineIntervalPoints(bool globalPos = false)
+    {
+        if (globalPos)
+            return lineIntervalPoints[^1] + transform.position;
+        else
+            return lineIntervalPoints[^1];
     }
 
     private void OnValidate()
