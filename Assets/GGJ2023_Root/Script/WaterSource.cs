@@ -3,10 +3,15 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class WaterSource : MonoBehaviour
 {
+    [Header("Settings")]
     [SerializeField] float _depleteTime;
+    [SerializeField] Ease _depleteEase;
+
+    [Header("References")]
     [SerializeField] Image _waterProgressBar;
     [SerializeField] Collider _collider;
 
@@ -27,25 +32,16 @@ public class WaterSource : MonoBehaviour
 
         Debug.Log("WaterSource.OnRootTriggerEnter");
         DataManager.Instance.AddProgress(1);
-        DepleteAsync();
+        TweenDeplete();
     }
 
-    private async void DepleteAsync()
+    private void TweenDeplete()
     {
-        const int DEPLET_INTERVAL = 1;
-
-        _waterProgressBar.fillAmount = 1;
-
-        float elapsedTime = _depleteTime;
-        while (elapsedTime > 0)
-        {
-            await Task.Delay(DEPLET_INTERVAL);
-            elapsedTime -= DEPLET_INTERVAL / 1000f;
-
-            float normalizedValue = elapsedTime / _depleteTime;
-            _waterProgressBar.fillAmount = Mathf.Clamp(normalizedValue, 0, 1);
-        }
-
-        _waterProgressBar.fillAmount = 0;
+        DOTween.To(
+            getter: () => _waterProgressBar.fillAmount,
+            setter: x => _waterProgressBar.fillAmount = x,
+            endValue: 0,
+            duration: _depleteTime
+        ).SetEase(_depleteEase);
     }
 }

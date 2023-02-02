@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameSceneUIController : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] float _tweenDuration = 1f;
+
     [Header("References")]
     [SerializeField] GameObject _pauseContainer;
     [SerializeField] Image _lifeEnergyBar;
@@ -15,8 +19,8 @@ public class GameSceneUIController : MonoBehaviour
 
     private void Awake()
     {
-        UpdateProgress(0);
-        UpdateLifeEnergy(1);
+        UpdateProgress(0, tween: false);
+        UpdateLifeEnergy(1, tween: false);
     }
 
     private void Start()
@@ -54,14 +58,30 @@ public class GameSceneUIController : MonoBehaviour
         Debug.Log("Quit clicked!");
     }
 
-    private void UpdateProgress(float normalizedProgress)
+    private void UpdateProgress(float normalizedProgress, bool tween = true)
     {
-        _progressBar.fillAmount = normalizedProgress;
+        if (!tween)
+            _progressBar.fillAmount = normalizedProgress;
+        else
+            DOTween.To(
+                getter: () => _progressBar.fillAmount,
+                setter: x => _progressBar.fillAmount = x,
+                endValue: normalizedProgress,
+                duration: _tweenDuration
+            );
     }
 
-    private void UpdateLifeEnergy(float normalizedLifeEnergy)
+    private void UpdateLifeEnergy(float normalizedLifeEnergy, bool tween = true)
     {
-        _lifeEnergyBar.fillAmount = normalizedLifeEnergy;
+        if (!tween)
+            _lifeEnergyBar.fillAmount = normalizedLifeEnergy;
+        else
+            DOTween.To(
+                getter: () => _lifeEnergyBar.fillAmount,
+                setter: x => _lifeEnergyBar.fillAmount = x,
+                endValue: normalizedLifeEnergy,
+                duration: _tweenDuration
+            );
     }
 }
 

@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 4430323719679360245}
   - component: {fileID: 4430323719679360244}
   m_Layer: 0
-  m_Name: Image
+  m_Name: WaterProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 4430323720272742780}
   - component: {fileID: 4430323720272742782}
   m_Layer: 4
-  m_Name: WaterBase
+  m_Name: WaterCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -337,6 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316ddad78ac1d5f4a9ea277ef56e192f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _depleteTime: 2
+  _depleteTime: 1.5
+  _depleteEase: 1
   _waterProgressBar: {fileID: 4430323719679360244}
   _collider: {fileID: 4430323720272742781}

@@ -56,7 +56,10 @@ public class DataManager : MonoBehaviour
 
     #region Progress
     public void SetTotalProgress(int totalProgress)
-        => _totalProgress = totalProgress;
+    {
+        _totalProgress = totalProgress;
+        Debug.Log($"DataManager: Total Progress set as {_totalProgress}");
+    }
 
     public void AddProgress(int progressToAdd)
     {
@@ -78,7 +81,10 @@ public class DataManager : MonoBehaviour
 
     #region LifeEnergy
     public void SetTotalLifeEnergy(int totalLifeEnergy)
-        => _totalLifeEnergy = totalLifeEnergy;
+    {
+        _totalLifeEnergy = totalLifeEnergy;
+        Debug.Log($"DataManager: Total Life Energy set as {_totalLifeEnergy}");
+    }
 
     public void AddLifeEnergy(int LifeEnergyToAdd)
     {
