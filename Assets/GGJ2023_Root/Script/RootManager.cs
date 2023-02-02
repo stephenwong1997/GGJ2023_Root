@@ -9,9 +9,10 @@ public class RootManager : MonoBehaviour
 
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)] [SerializeField] float angle = 40;
-    [Range(0, 180f)] [SerializeField] float range = 20;
-    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)][SerializeField] float angle = 40;
+    [Range(0, 180f)][SerializeField] float range = 20;
+    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
+    [SerializeField] float growInterval = 0.3f;
 
     [Header("Run time reference")]
     [SerializeField] RootDrawer currentRoot;
@@ -55,58 +56,95 @@ public class RootManager : MonoBehaviour
 
     private IEnumerator GrowTowardsMouse()
     {
+        bool previousMousePress = false;
+        bool currentMousePress = false;
+        bool successfullyBuiltRoot = false;
+
         while (true)
         {
-            if (Input.GetKey(KeyCode.Mouse0))
+            currentMousePress = Input.GetKey(KeyCode.Mouse0);
+
+            if (currentMousePress == true)
             {
-                OverlapSphereClosestNodeToMouseAndBuildNewRoot();
+                bool forceExtendCurrentRoot = false;
+                // If button is held down, force extend the current root and do not build new root
+                if (previousMousePress == true && successfullyBuiltRoot)
+                    forceExtendCurrentRoot = true;
+
+                print(forceExtendCurrentRoot);
+
+                successfullyBuiltRoot = OverlapSphereClosestNodeToMouseAndBuildNewRoot(forceExtendCurrentRoot);
+                if (successfullyBuiltRoot)
+                    yield return new WaitForSeconds(growInterval);
             }
-            yield return new WaitForSeconds(0.3f);
+            else
+            {
+                successfullyBuiltRoot = false;
+            }
+
+            previousMousePress = currentMousePress;
+            yield return null; //! DO NOT REMOVE OR ELSE INFINITE LOOP AND WILL HANG 
         }
     }
 
-    private void OverlapSphereClosestNodeToMouseAndBuildNewRoot()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns> True if can successfully build/extend root </returns>
+    private bool OverlapSphereClosestNodeToMouseAndBuildNewRoot(bool forceExtendCurrentRoot)
     {
         Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
-
-        Collider[] overlappingObjects = Physics.OverlapSphere(mousePos, GameManager.instance.MouseSphereRadius);
-        if (overlappingObjects == null || overlappingObjects.Length == 0)
-        {
-            print("RootManager.OverlapSphere(): No overlapping objects within sphere. Look at SceneView, ensure GameManager.DebugMouseSphere is true.");
-            return;
-        }
 
         Vector3 closestNode = default;
         float closestDistance = float.PositiveInfinity;
         RootDrawer closestRoot = null;
-        foreach (Collider collider in overlappingObjects)
-        {
-            if (!collider.TryGetComponent<RootDrawer>(out RootDrawer root)) continue;
 
-            //print($"Found '{collider.gameObject}'!");
-            Vector3 node = root.FindClosestNode(mousePos);
-            float squareDistance = Vector3.SqrMagnitude(mousePos - node);
-            if (squareDistance < closestDistance)
+        if (!forceExtendCurrentRoot)
+        {
+            Collider[] overlappingObjects = Physics.OverlapSphere(mousePos, GameManager.instance.MouseSphereRadius);
+            if (overlappingObjects == null || overlappingObjects.Length == 0)
             {
-                closestNode = node;
-                closestDistance = squareDistance;
-                closestRoot = root;
+                print("RootManager.OverlapSphere(): No overlapping objects within sphere. Look at SceneView, ensure GameManager.DebugMouseSphere is true.");
+                return false;
+            }
+
+            foreach (Collider collider in overlappingObjects)
+            {
+                if (!collider.TryGetComponent<RootDrawer>(out RootDrawer root)) continue;
+
+                //print($"Found '{collider.gameObject}'!");
+                Vector3 node = root.FindClosestNode(mousePos);
+                float squareDistance = Vector3.SqrMagnitude(mousePos - node);
+                if (squareDistance < closestDistance)
+                {
+                    closestNode = node;
+                    closestDistance = squareDistance;
+                    closestRoot = root;
+                }
             }
         }
+        else
+        {
+            closestRoot = currentRoot;
+            closestNode = currentRoot.GetLastLineIntervalPoints(true);
+            closestDistance = 0;
+        }
+
 
         if (closestDistance == float.PositiveInfinity)
         {
             print("RootManager.OverlapSphere(): No overlapping objects within sphere. Look at SceneView, ensure GameManager.DebugMouseSphere is true.");
-            return;
+            return false;
         }
 
-        if (Vector3.Distance(closestNode, mousePos) < stopGrowDistance)
+        // Square magnitude is more performant than Vector.Distance because no need to square root
+        if (Vector3.SqrMagnitude(closestNode - mousePos) < stopGrowDistance * stopGrowDistance)
         {
             print("Close enough, stop growing!");
-            return;
+            return false;
         }
 
-        if (roots.Contains(closestRoot) && closestNode == closestRoot.GetLastLineIntervalPoints(true))
+        if (forceExtendCurrentRoot || (roots.Contains(closestRoot) && closestNode == closestRoot.GetLastLineIntervalPoints(true)))
         {
             ExtendClosestRoot(closestRoot, closestNode, mousePos);
         }
@@ -114,42 +152,56 @@ public class RootManager : MonoBehaviour
         {
             BuildNewRoot(closestRoot, closestNode, mousePos);
         }
+
+        return true;
     }
-    //private void LinearSearchClosestNodeToMouseAndBuildNewRoot()
-    //{
-    //    Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
-
-    //    Vector3 closestNode = default;
-    //    float closestDistance = float.PositiveInfinity;
-    //    foreach (RootDrawer root in roots)
-    //    {
-    //        Vector3 node = root.FindClosestNode(mousePos);
-    //        float squareDistance = Vector3.SqrMagnitude(mousePos - node);
-    //        if (squareDistance < closestDistance)
-    //        {
-    //            closestNode = node;
-    //            closestDistance = squareDistance;
-    //        }
-    //    }
-
-    //    if (closestDistance == float.PositiveInfinity) return;
-    //    // print($"RootManager.LinearSearchClosestPointToMouse(): Found position: {closestNode}");
-
-    //    BuildNewRoot(closestNode, mousePos);
-    //}
 
     private void BuildNewRoot(RootDrawer extendFromRoot, Vector3 rootNode, Vector3 headNode)
     {
+        print("BuildNewRoot");
+
         GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
         currentRoot = newRoot.GetComponent<RootDrawer>();
         roots.Add(currentRoot);
         Vector3 localPosOfFromRoot = rootNode - extendFromRoot.transform.position;
         extendFromRoot.AddChildRoot(currentRoot, localPosOfFromRoot);
-        currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootNode, headNode));
+
+        // currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootNode, headNode));
+
+        Vector3 randomHeadNode = RandomArcCirclePoint(rootNode, headNode);
+        StartCoroutine(ExtendRootPosition(currentRoot, rootNode, randomHeadNode));
     }
+
     private void ExtendClosestRoot(RootDrawer closestRoot, Vector3 rootPos, Vector3 headNode)
     {
-        closestRoot.CreateNewRootPosition(RandomArcCirclePoint(rootPos, headNode));
+        // closestRoot.CreateNewRootPosition(RandomArcCirclePoint(rootPos, headNode));
+
+        currentRoot = closestRoot; //! Remember to update the current root!
+        Vector3 randomHeadNode = RandomArcCirclePoint(rootPos, headNode);
+        StartCoroutine(ExtendRootPosition(closestRoot, rootPos, randomHeadNode));
+    }
+
+    private IEnumerator ExtendRootPosition(RootDrawer root, Vector3 rootNode, Vector3 headNode)
+    {
+        const int FRAME_RATE = 40; // Randomly set
+        const float SECONDS_PER_FRAME = (float)1 / (float)FRAME_RATE;
+        const float BUFFER = 5; // Randomly set
+
+        int totalNumberOfFrames = Mathf.FloorToInt(growInterval * FRAME_RATE);
+
+        float frameIntervalDistance = Vector3.Distance(rootNode, headNode) / (float)totalNumberOfFrames;
+        Vector3 frameIntervalDirection = Vector3.Normalize(headNode - rootNode);
+        Vector3 frameIntervalVector = frameIntervalDirection * frameIntervalDistance;
+
+        WaitForSeconds waitForNextFrame = new WaitForSeconds(SECONDS_PER_FRAME);
+        for (int i = 0; i < totalNumberOfFrames - BUFFER; i++)
+        {
+            Vector3 intervalPoint = rootNode + (i + 1) * frameIntervalVector;
+            root.CreateNewRootPosition(intervalPoint);
+            yield return waitForNextFrame;
+        }
+
+        root.CreateNewRootPosition(headNode);
     }
 
     Vector3 RandomArcCirclePoint(Vector3 growPoint, Vector3 mousePos)
@@ -169,60 +221,60 @@ public class RootManager : MonoBehaviour
         return target;
     }
 
-    private void DetectClosestPointToMouse()
-    {
-        Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
-        RaycastHit hit;
-        int layerMask = 1 << 7;
-        for (float radius = 0.5f; radius < 100; radius += 0.5f)
-        {
-            if (Physics.SphereCast(mousePos, radius, Vector3.one, out hit, 10, layerMask))
-            {
-                GameObject newRoot = Instantiate(rootDrawer, hit.point, Quaternion.identity, rootParent);
-                currentRoot = newRoot.GetComponent<RootDrawer>();
-                roots.Add(currentRoot);
-                currentRoot.CreateNewRootPosition(mousePos);
-                print("Found position :  " + hit.point);
-                break;
-            }
-            print("Expend sphere , current radius " + radius + " mouse pos :  " + mousePos);
-        }
-    }
+    // private void DetectClosestPointToMouse()
+    // {
+    //     Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
+    //     RaycastHit hit;
+    //     int layerMask = 1 << 7;
+    //     for (float radius = 0.5f; radius < 100; radius += 0.5f)
+    //     {
+    //         if (Physics.SphereCast(mousePos, radius, Vector3.one, out hit, 10, layerMask))
+    //         {
+    //             GameObject newRoot = Instantiate(rootDrawer, hit.point, Quaternion.identity, rootParent);
+    //             currentRoot = newRoot.GetComponent<RootDrawer>();
+    //             roots.Add(currentRoot);
+    //             currentRoot.CreateNewRootPosition(mousePos);
+    //             print("Found position :  " + hit.point);
+    //             break;
+    //         }
+    //         print("Expend sphere , current radius " + radius + " mouse pos :  " + mousePos);
+    //     }
+    // }
 
-    private void BuildRoot()
-    {
-        float closestDistance = int.MaxValue;
-        int indexOfClosestRoot = 0;
-        Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
-        for (int i = 0; i < roots.Count; i++)
-        {
-            Vector3 closestPoint = roots[i].meshCollider.ClosestPoint(mousePos);
-            float newDistance = Vector3.Distance(mousePos, closestPoint);
-            if (newDistance < closestDistance)
-            {
-                closestDistance = newDistance;
-                indexOfClosestRoot = i;
-            }
-        }
+    // private void BuildRoot()
+    // {
+    //     float closestDistance = int.MaxValue;
+    //     int indexOfClosestRoot = 0;
+    //     Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
+    //     for (int i = 0; i < roots.Count; i++)
+    //     {
+    //         Vector3 closestPoint = roots[i].meshCollider.ClosestPoint(mousePos);
+    //         float newDistance = Vector3.Distance(mousePos, closestPoint);
+    //         if (newDistance < closestDistance)
+    //         {
+    //             closestDistance = newDistance;
+    //             indexOfClosestRoot = i;
+    //         }
+    //     }
 
-        float distanceWithClosestRootHead = Vector3.Distance(mousePos, roots[indexOfClosestRoot].GetLastPoint);
-        if (closestDistance < distanceWithClosestRootHead) // head is not the closest, create a new root
-        {
-            Vector3 closetPoint = roots[indexOfClosestRoot].meshCollider.ClosestPoint(mousePos);
-            Debug.LogError("Create new root at " + indexOfClosestRoot + " , position : " + closetPoint);
-            GameObject newRoot = Instantiate(rootDrawer, closetPoint, Quaternion.identity, rootParent);
-            currentRoot = newRoot.GetComponent<RootDrawer>();
-            roots.Add(currentRoot);
-        }
-        else// head is near, extend the root of head
-        {
-            currentRoot = roots[indexOfClosestRoot];
-        }
+    //     float distanceWithClosestRootHead = Vector3.Distance(mousePos, roots[indexOfClosestRoot].GetLastPoint);
+    //     if (closestDistance < distanceWithClosestRootHead) // head is not the closest, create a new root
+    //     {
+    //         Vector3 closetPoint = roots[indexOfClosestRoot].meshCollider.ClosestPoint(mousePos);
+    //         Debug.LogError("Create new root at " + indexOfClosestRoot + " , position : " + closetPoint);
+    //         GameObject newRoot = Instantiate(rootDrawer, closetPoint, Quaternion.identity, rootParent);
+    //         currentRoot = newRoot.GetComponent<RootDrawer>();
+    //         roots.Add(currentRoot);
+    //     }
+    //     else// head is near, extend the root of head
+    //     {
+    //         currentRoot = roots[indexOfClosestRoot];
+    //     }
 
 
-        currentRoot.CreateNewRootPosition(mousePos);
+    //     currentRoot.CreateNewRootPosition(mousePos);
 
-    }
+    // }
 
 
 }

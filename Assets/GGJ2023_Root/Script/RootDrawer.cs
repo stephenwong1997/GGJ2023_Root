@@ -85,13 +85,18 @@ public class RootDrawer : MonoBehaviour
         Vector3 previousPosition = lineIntervalPoints.Last();
 
         int intervalCount = Mathf.FloorToInt(Vector3.Distance(previousPosition, newPosition) / intervalDistance);
-        Vector3 intervalDirection = (newPosition - previousPosition).normalized;
-        Vector3 intervalVector = intervalDistance * intervalDirection;
 
-        for (int i = 0; i < intervalCount; i++)
+        const int MIN_INTERVAL_COUNT = 2; // randomly set
+        if (intervalCount > MIN_INTERVAL_COUNT)
         {
-            Vector3 intervalPoint = previousPosition + (i + 1) * intervalVector;
-            lineIntervalPoints.Add(intervalPoint);
+            Vector3 intervalDirection = (newPosition - previousPosition).normalized;
+            Vector3 intervalVector = intervalDistance * intervalDirection;
+
+            for (int i = 0; i < intervalCount; i++)
+            {
+                Vector3 intervalPoint = previousPosition + (i + 1) * intervalVector;
+                lineIntervalPoints.Add(intervalPoint);
+            }
         }
 
         lineIntervalPoints.Add(newPosition);
