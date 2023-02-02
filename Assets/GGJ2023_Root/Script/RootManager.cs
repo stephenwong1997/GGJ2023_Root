@@ -7,6 +7,10 @@ public class RootManager : MonoBehaviour
 {
     public static RootManager instance;
 
+    [Header("Root expand value reference")]
+    [Range(0, 180f)] [SerializeField] float angle = 40;
+    [Range(0, 180f)] [SerializeField] float range = 20;
+
     [Header("Run time reference")]
     [SerializeField] RootDrawer currentRoot;
     [SerializeField] List<RootDrawer> roots;
@@ -16,31 +20,47 @@ public class RootManager : MonoBehaviour
 
     [Header("Prefab reference")]
     [SerializeField] GameObject rootDrawer;
+    [SerializeField] GameObject sphereMark;
 
     private void Awake()
     {
         if (instance == null)
             instance = this;
         //currentRoot.CreateNewRootPosition(Vector3.forward);
+        StartCoroutine(GrowTowardsMouse());
+
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            // BuildRoot();
-            // DetectClosestPointToMouse();
-            // currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
+        //if (Input.GetKey(KeyCode.Mouse0))
+        //{
+        //    // BuildRoot();
+        //    // DetectClosestPointToMouse();
+        //    // currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
 
-            // Algorithm 1: Brute force, not optimized
-            // LinearSearchClosestNodeToMouseAndBuildNewRoot();
+        //    // Algorithm 1: Brute force, not optimized
+        //    // LinearSearchClosestNodeToMouseAndBuildNewRoot();
 
-            // Algorithm 2: Fixed search area, find nearest root => nearest node within root => build new root
-            OverlapSphereClosestNodeToMouseAndBuildNewRoot();
-        }
+        //    // Algorithm 2: Fixed search area, find nearest root => nearest node within root => build new root
+        //    OverlapSphereClosestNodeToMouseAndBuildNewRoot();
+        //}
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
+            RandomArcCirclePoint(currentRoot.transform.position, GameManager.instance.GetMouseClickPointOnPlane());
+        }
+    }
+
+    private IEnumerator GrowTowardsMouse()
+    {
+
+        while (true)
+        {
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                OverlapSphereClosestNodeToMouseAndBuildNewRoot();
+            }
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -79,11 +99,9 @@ public class RootManager : MonoBehaviour
             return;
         }
 
-        print($"closest node {closestNode}");
-        print($"closestRoot.GetLastPoint  {closestRoot.GetLastLineIntervalPoints(true)}");
         if (closestRoot == currentRoot && closestNode == closestRoot.GetLastLineIntervalPoints(true))
         {
-            currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
+            ExtendCurrentRoot(closestNode, mousePos);
         }
         else
         {
@@ -118,7 +136,22 @@ public class RootManager : MonoBehaviour
         GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
         currentRoot = newRoot.GetComponent<RootDrawer>();
         roots.Add(currentRoot);
-        currentRoot.CreateNewRootPosition(headNode);
+        currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootNode, headNode));
+    }
+    private void ExtendCurrentRoot(Vector3 rootPos, Vector3 headNode)
+    {
+        currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootPos, headNode));
+    }
+
+    Vector3 RandomArcCirclePoint(Vector3 growPoint, Vector3 mousePos)
+    {
+        Vector3 direction = (mousePos - growPoint).normalized * range;
+        float randomPos = UnityEngine.Random.Range(-angle / 2, angle / 2);
+        Vector3 target = growPoint + Quaternion.Euler(Vector3.forward * randomPos) * direction;
+        //Instantiate(sphereMark, growPoint, Quaternion.identity);
+        //Instantiate(sphereMark, mousePos, Quaternion.identity);
+        //Instantiate(sphereMark, target, Quaternion.identity);
+        return target;
     }
 
     private void DetectClosestPointToMouse()
