@@ -16,8 +16,16 @@ public class GameSceneUIController : MonoBehaviour
     [SerializeField] Image _lifeEnergyBar;
     [SerializeField] Image _progressBar;
     [SerializeField] TextMeshProUGUI _subtitle;
+    [SerializeField] Image _muteSlash;
 
     List<Guid> _tokenList = new List<Guid>();
+
+    bool _muteButtonState
+    {
+        get => m_muteButtonState;
+        set => SetMuteButtonState(value); // Updates mute slash automatically
+    }
+    bool m_muteButtonState;
 
     private void Awake()
     {
@@ -41,6 +49,8 @@ public class GameSceneUIController : MonoBehaviour
         Debug.Log("Pause clicked!");
 
         _subtitle.text = "";
+        // TODO : set _muteButtonState
+        UpdateMuteButton();
         _pauseContainer.SetActive(true);
     }
 
@@ -66,6 +76,7 @@ public class GameSceneUIController : MonoBehaviour
     public void OnMuteButtonClicked()
     {
         Debug.Log("Mute clicked!");
+        _muteButtonState = !_muteButtonState;
     }
 
     public void OnMuteButtonHoverEnter()
@@ -131,6 +142,18 @@ public class GameSceneUIController : MonoBehaviour
         // _subtitle.text = "";
     }
 
+    private void SetMuteButtonState(bool state)
+    {
+        m_muteButtonState = state;
+        UpdateMuteButton();
+    }
+
+    private void UpdateMuteButton()
+    {
+        _muteSlash.enabled = _muteButtonState;
+        _muteSlash.gameObject.SetActive(_muteButtonState);
+    }
+
     private void UpdateProgress(float normalizedProgress, bool tween = true)
     {
         UpdateProgress(normalizedProgress, tween ? _progressBarTweenDuration : 0);
@@ -143,7 +166,7 @@ public class GameSceneUIController : MonoBehaviour
             setter: x => _progressBar.fillAmount = x,
             endValue: normalizedProgress,
             duration: tweenDuration
-        );
+        ).SetEase(Ease.Linear);
     }
 
     private void UpdateLifeEnergy(float normalizedLifeEnergy, bool tween = true)
