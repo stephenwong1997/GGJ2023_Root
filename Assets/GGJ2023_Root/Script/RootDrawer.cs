@@ -13,6 +13,7 @@ public class RootDrawer : MonoBehaviour
     [SerializeField] List<Vector3> lineIntervalPoints = new List<Vector3>();
     [SerializeField] LineRendererSmoother smoother;
     public MeshCollider meshCollider;
+    public List<ChildRoot> childRoots = new List<ChildRoot>();
     [SerializeField] float SmoothingLength = 2;
     [SerializeField] int SmoothingSections = 8;
 
@@ -45,13 +46,11 @@ public class RootDrawer : MonoBehaviour
         }
     }
 
-
-    private void Update()
+    public void AddChildRoot(RootDrawer newRoot, Vector3 growPos)
     {
-        //if (Input.GetKeyDown(KeyCode.Mouse0))
-        //{
-        //    CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
-        //}
+        int indexOfGrowPos = lineIntervalPoints.FindIndex(p => p == growPos);
+        ChildRoot child = new ChildRoot() { childRoot = newRoot, extendFromPointIndex = indexOfGrowPos };
+        childRoots.Add(child);
     }
 
     public void CreateNewRootPosition(Vector3 toNewPosition)
@@ -136,10 +135,6 @@ public class RootDrawer : MonoBehaviour
             }
         }
 
-        // Reset values so inspector doesn't freeze if you use lots of smoothing sections
-        //SmoothingSections = 1;
-        //SmoothingLength = 0;
-
     }
     private void CalculatePath()
     {
@@ -161,15 +156,6 @@ public class RootDrawer : MonoBehaviour
             Vector3 startTangent = (lastDirection + nextDirection) * SmoothingLength;
             Vector3 endTangent = (nextDirection + lastDirection) * -1 * SmoothingLength;
 
-            //Handles.color = Color.green;
-            //Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), position + startTangent, Quaternion.identity, 0.25f, EventType.Repaint);
-
-            //if (i != 0)
-            //{
-            //    Handles.color = Color.blue;
-            //    Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), nextPosition + endTangent, Quaternion.identity, 0.25f, EventType.Repaint);
-            //}
-
             Curves[i].Points[0] = position; // Start Position (P0)
             Curves[i].Points[1] = position + startTangent; // Start Tangent (P1)
             Curves[i].Points[2] = nextPosition + endTangent; // End Tangent (P2)
@@ -184,36 +170,9 @@ public class RootDrawer : MonoBehaviour
             Curves[0].Points[2] = Curves[0].Points[3] +
                 (nextDirection + lastDirection) * -1 * SmoothingLength;
 
-            //Handles.color = Color.blue;
-            //Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), Curves[0].Points[2], Quaternion.identity, 0.25f, EventType.Repaint);
         }
-
-        //DrawSegments();
     }
 
-    //private void DrawSegments()
-    //{
-    //    for (int i = 0; i < Curves.Length; i++)
-    //    {
-    //        Vector3[] segments = Curves[i].GetSegments(SmoothingSections.intValue);
-    //        for (int j = 0; j < segments.Length - 1; j++)
-    //        {
-    //            Handles.color = Color.white;
-    //            Handles.DrawLine(segments[j], segments[j + 1]);
-
-    //            float color = (float)j / segments.Length;
-    //            Handles.color = new Color(color, color, color);
-    //            Handles.Label(segments[j], $"C{i} S{j}");
-    //            Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), segments[j], Quaternion.identity, 0.05f, EventType.Repaint);
-    //        }
-
-    //        Handles.color = Color.white;
-    //        Handles.Label(segments[segments.Length - 1], $"C{i} S{segments.Length - 1}");
-    //        Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), segments[segments.Length - 1], Quaternion.identity, 0.05f, EventType.Repaint);
-
-    //        Handles.DrawLine(segments[segments.Length - 1], Curves[i].EndPosition);
-    //    }
-    //}
 
     private void EnsureCurvesMatchLineRendererPositions()
     {
@@ -226,4 +185,12 @@ public class RootDrawer : MonoBehaviour
             }
         }
     }
+}
+
+
+[System.Serializable]
+public class ChildRoot
+{
+    public int extendFromPointIndex;
+    public RootDrawer childRoot;
 }
