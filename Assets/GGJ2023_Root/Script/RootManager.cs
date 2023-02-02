@@ -8,8 +8,10 @@ public class RootManager : MonoBehaviour
     public static RootManager instance;
 
     [Header("Root expand value reference")]
+    [SerializeField] bool canGrow = false;
     [Range(0, 180f)] [SerializeField] float angle = 40;
     [Range(0, 180f)] [SerializeField] float range = 20;
+    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
 
     [Header("Run time reference")]
     [SerializeField] RootDrawer currentRoot;
@@ -26,7 +28,7 @@ public class RootManager : MonoBehaviour
     {
         if (instance == null)
             instance = this;
-        //currentRoot.CreateNewRootPosition(Vector3.forward);
+
         StartCoroutine(GrowTowardsMouse());
 
     }
@@ -45,15 +47,14 @@ public class RootManager : MonoBehaviour
         //    OverlapSphereClosestNodeToMouseAndBuildNewRoot();
         //}
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            RandomArcCirclePoint(currentRoot.transform.position, GameManager.instance.GetMouseClickPointOnPlane());
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    RandomArcCirclePoint(currentRoot.transform.position, GameManager.instance.GetMouseClickPointOnPlane());
+        //}
     }
 
     private IEnumerator GrowTowardsMouse()
     {
-
         while (true)
         {
             if (Input.GetKey(KeyCode.Mouse0))
@@ -82,7 +83,7 @@ public class RootManager : MonoBehaviour
         {
             if (!collider.TryGetComponent<RootDrawer>(out RootDrawer root)) continue;
 
-            print($"Found '{collider.gameObject}'!");
+            //print($"Found '{collider.gameObject}'!");
             Vector3 node = root.FindClosestNode(mousePos);
             float squareDistance = Vector3.SqrMagnitude(mousePos - node);
             if (squareDistance < closestDistance)
@@ -99,58 +100,72 @@ public class RootManager : MonoBehaviour
             return;
         }
 
-        if (closestRoot == currentRoot && closestNode == closestRoot.GetLastLineIntervalPoints(true))
+        if (Vector3.Distance(closestNode, mousePos) < stopGrowDistance)
         {
-            ExtendCurrentRoot(closestNode, mousePos);
+            print("Close enough, stop growing!");
+            return;
+        }
+
+        if (roots.Contains(closestRoot) && closestNode == closestRoot.GetLastLineIntervalPoints(true))
+        {
+            ExtendClosestRoot(closestRoot, closestNode, mousePos);
         }
         else
         {
-            BuildNewRoot(closestNode, mousePos);
+            BuildNewRoot(closestRoot, closestNode, mousePos);
         }
     }
-    private void LinearSearchClosestNodeToMouseAndBuildNewRoot()
-    {
-        Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
+    //private void LinearSearchClosestNodeToMouseAndBuildNewRoot()
+    //{
+    //    Vector3 mousePos = GameManager.instance.GetMouseClickPointOnPlane();
 
-        Vector3 closestNode = default;
-        float closestDistance = float.PositiveInfinity;
-        foreach (RootDrawer root in roots)
-        {
-            Vector3 node = root.FindClosestNode(mousePos);
-            float squareDistance = Vector3.SqrMagnitude(mousePos - node);
-            if (squareDistance < closestDistance)
-            {
-                closestNode = node;
-                closestDistance = squareDistance;
-            }
-        }
+    //    Vector3 closestNode = default;
+    //    float closestDistance = float.PositiveInfinity;
+    //    foreach (RootDrawer root in roots)
+    //    {
+    //        Vector3 node = root.FindClosestNode(mousePos);
+    //        float squareDistance = Vector3.SqrMagnitude(mousePos - node);
+    //        if (squareDistance < closestDistance)
+    //        {
+    //            closestNode = node;
+    //            closestDistance = squareDistance;
+    //        }
+    //    }
 
-        if (closestDistance == float.PositiveInfinity) return;
-        // print($"RootManager.LinearSearchClosestPointToMouse(): Found position: {closestNode}");
+    //    if (closestDistance == float.PositiveInfinity) return;
+    //    // print($"RootManager.LinearSearchClosestPointToMouse(): Found position: {closestNode}");
 
-        BuildNewRoot(closestNode, mousePos);
-    }
+    //    BuildNewRoot(closestNode, mousePos);
+    //}
 
-    private void BuildNewRoot(Vector3 rootNode, Vector3 headNode)
+    private void BuildNewRoot(RootDrawer extendFromRoot, Vector3 rootNode, Vector3 headNode)
     {
         GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
         currentRoot = newRoot.GetComponent<RootDrawer>();
         roots.Add(currentRoot);
+        Vector3 localPosOfFromRoot = rootNode - extendFromRoot.transform.position;
+        extendFromRoot.AddChildRoot(currentRoot, localPosOfFromRoot);
         currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootNode, headNode));
     }
-    private void ExtendCurrentRoot(Vector3 rootPos, Vector3 headNode)
+    private void ExtendClosestRoot(RootDrawer closestRoot, Vector3 rootPos, Vector3 headNode)
     {
-        currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootPos, headNode));
+        closestRoot.CreateNewRootPosition(RandomArcCirclePoint(rootPos, headNode));
     }
 
     Vector3 RandomArcCirclePoint(Vector3 growPoint, Vector3 mousePos)
     {
+
+        //if range > root to mouse distance, return mouse Pos as exact growth target point
+        float rootMouseDistance = (mousePos - growPoint).magnitude;
+        if (rootMouseDistance < range)
+        {
+            return mousePos;
+        }
+
+        //if mouse is far away, grow "range" length with random arc
         Vector3 direction = (mousePos - growPoint).normalized * range;
         float randomPos = UnityEngine.Random.Range(-angle / 2, angle / 2);
         Vector3 target = growPoint + Quaternion.Euler(Vector3.forward * randomPos) * direction;
-        //Instantiate(sphereMark, growPoint, Quaternion.identity);
-        //Instantiate(sphereMark, mousePos, Quaternion.identity);
-        //Instantiate(sphereMark, target, Quaternion.identity);
         return target;
     }
 
@@ -208,4 +223,6 @@ public class RootManager : MonoBehaviour
         currentRoot.CreateNewRootPosition(mousePos);
 
     }
+
+
 }
