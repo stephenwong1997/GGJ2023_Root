@@ -13,6 +13,12 @@ public class GameSceneUIController : MonoBehaviour
 
     List<Guid> _tokenList = new List<Guid>();
 
+    private void Awake()
+    {
+        UpdateProgress(0);
+        UpdateLifeEnergy(1);
+    }
+
     private void Start()
     {
         _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnProgressChangedEvent>((e) => UpdateProgress(e.NormalizedValue)));

@@ -339,3 +339,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _depleteTime: 2
   _waterProgressBar: {fileID: 4430323719679360244}
+  _collider: {fileID: 4430323720272742781}

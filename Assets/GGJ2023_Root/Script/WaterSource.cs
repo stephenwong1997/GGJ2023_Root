@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,35 +8,39 @@ public class WaterSource : MonoBehaviour
 {
     [SerializeField] float _depleteTime;
     [SerializeField] Image _waterProgressBar;
+    [SerializeField] Collider _collider;
 
     bool _isDepleting;
 
     private void Awake()
     {
         _isDepleting = false;
+        _waterProgressBar.fillAmount = 1;
+        _collider.enabled = true;
     }
 
     public void OnRootTriggerEnter()
     {
         if (_isDepleting) return;
         _isDepleting = true;
+        _collider.enabled = false;
 
         Debug.Log("WaterSource.OnRootTriggerEnter");
-        StartCoroutine(DepleteCoroutine());
+        DataManager.Instance.AddProgress(1);
+        DepleteAsync();
     }
 
-    private IEnumerator DepleteCoroutine()
+    private async void DepleteAsync()
     {
-        const float DEPLET_INTERVAL = 0.001f;
-        WaitForSeconds waitForSeconds = new WaitForSeconds(DEPLET_INTERVAL);
+        const int DEPLET_INTERVAL = 1;
 
         _waterProgressBar.fillAmount = 1;
 
         float elapsedTime = _depleteTime;
         while (elapsedTime > 0)
         {
-            yield return waitForSeconds;
-            elapsedTime -= DEPLET_INTERVAL;
+            await Task.Delay(DEPLET_INTERVAL);
+            elapsedTime -= DEPLET_INTERVAL / 1000f;
 
             float normalizedValue = elapsedTime / _depleteTime;
             _waterProgressBar.fillAmount = Mathf.Clamp(normalizedValue, 0, 1);
