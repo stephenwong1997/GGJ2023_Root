@@ -3,17 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using DG.Tweening;
 
 public class GameSceneUIController : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] float _tweenDuration = 1f;
+    [SerializeField] float _progressBarTweenDuration = 1f;
 
     [Header("References")]
     [SerializeField] GameObject _pauseContainer;
     [SerializeField] Image _lifeEnergyBar;
     [SerializeField] Image _progressBar;
+    [SerializeField] TextMeshProUGUI _subtitle;
 
     List<Guid> _tokenList = new List<Guid>();
 
@@ -25,7 +27,7 @@ public class GameSceneUIController : MonoBehaviour
 
     private void Start()
     {
-        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnProgressChangedEvent>((e) => UpdateProgress(e.NormalizedValue)));
+        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnProgressChangedEvent>((e) => UpdateProgress(e.NormalizedValue, e.TweenDuration)));
         _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnLifeEnergyChangedEvent>((e) => UpdateLifeEnergy(e.NormalizedValue)));
     }
 
@@ -38,6 +40,7 @@ public class GameSceneUIController : MonoBehaviour
     {
         Debug.Log("Pause clicked!");
 
+        _subtitle.text = "";
         _pauseContainer.SetActive(true);
     }
 
@@ -48,9 +51,67 @@ public class GameSceneUIController : MonoBehaviour
         _pauseContainer.SetActive(false);
     }
 
+    public void OnResumeButtonHoverEnter()
+    {
+        Debug.Log("Resume hover enter!");
+        _subtitle.text = "Resume";
+    }
+
+    public void OnResumeButtonHoverExit()
+    {
+        Debug.Log("Resume hover exit!");
+        // _subtitle.text = "";
+    }
+
+    public void OnMuteButtonClicked()
+    {
+        Debug.Log("Mute clicked!");
+    }
+
+    public void OnMuteButtonHoverEnter()
+    {
+        Debug.Log("Mute hover enter!");
+        _subtitle.text = "Music";
+    }
+
+    public void OnMuteButtonHoverExit()
+    {
+        Debug.Log("Mute hover exit!");
+        // _subtitle.text = "";
+    }
+
+    public void OnLevelButtonClicked()
+    {
+        Debug.Log("Level clicked!");
+    }
+
+    public void OnLevelButtonHoverEnter()
+    {
+        Debug.Log("Level hover enter!");
+        _subtitle.text = "Level Selection";
+    }
+
+    public void OnLevelButtonHoverExit()
+    {
+        Debug.Log("Level hover exit!");
+        // _subtitle.text = "";
+    }
+
     public void OnRestartButtonClicked()
     {
         Debug.Log("Restart clicked!");
+    }
+
+    public void OnRestartButtonHoverEnter()
+    {
+        Debug.Log("Restart hover enter!");
+        _subtitle.text = "Restart";
+    }
+
+    public void OnRestartButtonHoverExit()
+    {
+        Debug.Log("Restart hover exit!");
+        // _subtitle.text = "";
     }
 
     public void OnQuitButtonClicked()
@@ -58,17 +119,31 @@ public class GameSceneUIController : MonoBehaviour
         Debug.Log("Quit clicked!");
     }
 
+    public void OnQuitButtonHoverEnter()
+    {
+        Debug.Log("Quit hover enter!");
+        _subtitle.text = "Exit";
+    }
+
+    public void OnQuitButtonHoverExit()
+    {
+        Debug.Log("Quit hover exit!");
+        // _subtitle.text = "";
+    }
+
     private void UpdateProgress(float normalizedProgress, bool tween = true)
     {
-        if (!tween)
-            _progressBar.fillAmount = normalizedProgress;
-        else
-            DOTween.To(
-                getter: () => _progressBar.fillAmount,
-                setter: x => _progressBar.fillAmount = x,
-                endValue: normalizedProgress,
-                duration: _tweenDuration
-            );
+        UpdateProgress(normalizedProgress, tween ? _progressBarTweenDuration : 0);
+    }
+
+    private void UpdateProgress(float normalizedProgress, float tweenDuration)
+    {
+        DOTween.To(
+            getter: () => _progressBar.fillAmount,
+            setter: x => _progressBar.fillAmount = x,
+            endValue: normalizedProgress,
+            duration: tweenDuration
+        );
     }
 
     private void UpdateLifeEnergy(float normalizedLifeEnergy, bool tween = true)
@@ -80,7 +155,7 @@ public class GameSceneUIController : MonoBehaviour
                 getter: () => _lifeEnergyBar.fillAmount,
                 setter: x => _lifeEnergyBar.fillAmount = x,
                 endValue: normalizedLifeEnergy,
-                duration: _tweenDuration
+                duration: _progressBarTweenDuration
             );
     }
 }

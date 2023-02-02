@@ -31,7 +31,7 @@ public class WaterSource : MonoBehaviour
         _collider.enabled = false;
 
         Debug.Log("WaterSource.OnRootTriggerEnter");
-        DataManager.Instance.AddProgress(1);
+        DataManager.Instance.AddProgress(1, _depleteTime);
         TweenDeplete();
     }
 

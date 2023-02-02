@@ -18,6 +18,7 @@ public class DataManager : MonoBehaviour
         }
     }
     int m_currentProgress;
+    float m_lastWaterDepleteTime;
 
     /// <summary>
     /// Total Progress => The required total water to drink to complete the level.
@@ -61,8 +62,9 @@ public class DataManager : MonoBehaviour
         Debug.Log($"DataManager: Total Progress set as {_totalProgress}");
     }
 
-    public void AddProgress(int progressToAdd)
+    public void AddProgress(int progressToAdd, float waterDepleteTime)
     {
+        m_lastWaterDepleteTime = waterDepleteTime;
         _currentProgress += progressToAdd;
     }
 
@@ -75,7 +77,7 @@ public class DataManager : MonoBehaviour
     {
         float normalizedProgress = (float)m_currentProgress / (float)_totalProgress;
         Debug.Log($"DataManager: Current progress updated ({m_currentProgress}/{_totalProgress} = {normalizedProgress})");
-        MessageHubSingleton.Instance.Publish(new OnProgressChangedEvent(m_currentProgress, normalizedProgress));
+        MessageHubSingleton.Instance.Publish(new OnProgressChangedEvent(m_currentProgress, normalizedProgress, m_lastWaterDepleteTime));
     }
     #endregion
 
@@ -109,11 +111,13 @@ public class OnProgressChangedEvent
 {
     public int ChangedValue;
     public float NormalizedValue;
+    public float TweenDuration;
 
-    public OnProgressChangedEvent(int changedValue, float normalizedValue)
+    public OnProgressChangedEvent(int changedValue, float normalizedValue, float tweenDuration)
     {
         ChangedValue = changedValue;
         NormalizedValue = normalizedValue;
+        TweenDuration = tweenDuration;
     }
 }
 
