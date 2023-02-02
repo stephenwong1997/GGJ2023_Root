@@ -364,7 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   angle: 40
-  range: 1.5
+  range: 5
   currentRoot: {fileID: 136878409}
   roots:
   - {fileID: 136878409}
