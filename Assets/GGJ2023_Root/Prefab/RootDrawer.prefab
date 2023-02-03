@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1370423817}
   - component: {fileID: 1370423816}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OriginPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,8 @@ GameObject:
   - component: {fileID: 5990701483984011470}
   - component: {fileID: 5990701483984011469}
   - component: {fileID: 5990701483984011471}
-  m_Layer: 7
+  - component: {fileID: 2034501407}
+  m_Layer: 6
   m_Name: RootDrawer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,9 +261,12 @@ MonoBehaviour:
   linePoints:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  lineIntervalPoints: []
+  - {x: 0, y: -1, z: 0}
+  lineIntervalPoints:
+  - {x: 0, y: 0, z: 0}
   smoother: {fileID: 5990701483984011470}
   meshCollider: {fileID: 5990701483984011471}
+  childRoots: []
   SmoothingLength: 2
   SmoothingSections: 8
   intervalDistance: 2
@@ -274,9 +278,21 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5990701483984011457}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2034501407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990701483984011457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40fd5dcf67b78d4bab8d878ee21c703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

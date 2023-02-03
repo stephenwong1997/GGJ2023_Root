@@ -10,4 +10,13 @@ public class RootHitbox : MonoBehaviour
 
         waterSource.OnRootTriggerEnter();
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("RootHitbox.OnCollisionEnter");
+
+        if (!collision.collider.TryGetComponent(out WaterSource waterSource)) return;
+
+        waterSource.OnRootTriggerEnter();
+    }
 }
