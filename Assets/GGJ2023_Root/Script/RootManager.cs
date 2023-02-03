@@ -33,26 +33,6 @@ public class RootManager : MonoBehaviour
         StartCoroutine(GrowTowardsMouse());
 
     }
-    private void Update()
-    {
-        //if (Input.GetKey(KeyCode.Mouse0))
-        //{
-        //    // BuildRoot();
-        //    // DetectClosestPointToMouse();
-        //    // currentRoot.CreateNewRootPosition(GameManager.instance.GetMouseClickPointOnPlane());
-
-        //    // Algorithm 1: Brute force, not optimized
-        //    // LinearSearchClosestNodeToMouseAndBuildNewRoot();
-
-        //    // Algorithm 2: Fixed search area, find nearest root => nearest node within root => build new root
-        //    OverlapSphereClosestNodeToMouseAndBuildNewRoot();
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    RandomArcCirclePoint(currentRoot.transform.position, GameManager.instance.GetMouseClickPointOnPlane());
-        //}
-    }
 
     private IEnumerator GrowTowardsMouse()
     {
@@ -70,8 +50,6 @@ public class RootManager : MonoBehaviour
                 // If button is held down, force extend the current root and do not build new root
                 if (previousMousePress == true && successfullyBuiltRoot)
                     forceExtendCurrentRoot = true;
-
-                print(forceExtendCurrentRoot);
 
                 successfullyBuiltRoot = OverlapSphereClosestNodeToMouseAndBuildNewRoot(forceExtendCurrentRoot);
                 if (successfullyBuiltRoot)
@@ -162,7 +140,10 @@ public class RootManager : MonoBehaviour
 
         GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
         currentRoot = newRoot.GetComponent<RootDrawer>();
+        currentRoot.parentRoot = extendFromRoot;
+
         roots.Add(currentRoot);
+
         Vector3 localPosOfFromRoot = rootNode - extendFromRoot.transform.position;
         extendFromRoot.AddChildRoot(currentRoot, localPosOfFromRoot);
 
@@ -187,6 +168,13 @@ public class RootManager : MonoBehaviour
         const float SECONDS_PER_FRAME = (float)1 / (float)FRAME_RATE;
         const float BUFFER = 5; // Randomly set
 
+        // In case FPS gets too low
+        if (Time.deltaTime > SECONDS_PER_FRAME)
+        {
+            root.CreateNewRootPosition(headNode);
+            yield break;
+        }
+
         int totalNumberOfFrames = Mathf.FloorToInt(growInterval * FRAME_RATE);
 
         float frameIntervalDistance = Vector3.Distance(rootNode, headNode) / (float)totalNumberOfFrames;
@@ -198,6 +186,7 @@ public class RootManager : MonoBehaviour
         {
             Vector3 intervalPoint = rootNode + (i + 1) * frameIntervalVector;
             root.CreateNewRootPosition(intervalPoint);
+
             yield return waitForNextFrame;
         }
 

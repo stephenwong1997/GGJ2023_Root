@@ -367,6 +367,7 @@ MonoBehaviour:
   angle: 40
   range: 10
   stopGrowDistance: 1.5
+  growInterval: 0.3
   currentRoot: {fileID: 136878409}
   roots:
   - {fileID: 136878409}
@@ -833,6 +834,54 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainRoot
       objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
+      value: 0.10369263
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].inSlope
+      value: Infinity
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].inSlope
+      value: -0.89630735
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].outSlope
+      value: -0.89630735
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].outSlope
+      value: Infinity
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].tangentMode
+      value: 69
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011459, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].tangentMode
+      value: 69
+      objectReference: {fileID: 0}
     - target: {fileID: 5990701483984011468, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -878,8 +927,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5990701483984011469, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: childRootLengthWeight
+      value: 0.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011469, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
       propertyPath: linePoints.Array.size
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990701483984011469, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
+      propertyPath: widthToLengthConstant
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5990701483984011469, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
       propertyPath: linePoints.Array.data[2].y
