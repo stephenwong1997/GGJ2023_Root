@@ -88,9 +88,9 @@ public class DataManager : MonoBehaviour
         Debug.Log($"DataManager: Total Life Energy set as {_totalLifeEnergy}");
     }
 
-    public void AddLifeEnergy(int LifeEnergyToAdd)
+    public void ChangeLifeEnergy(int LifeEnergyToChange)
     {
-        _currentLifeEnergy += LifeEnergyToAdd;
+        _currentLifeEnergy += LifeEnergyToChange;
     }
 
     public void ResetLifeEnergy()
