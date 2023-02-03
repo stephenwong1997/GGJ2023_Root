@@ -12,7 +12,7 @@ public class RootDrawer : MonoBehaviour
     [SerializeField] List<Vector3> linePoints = new List<Vector3>();
     [SerializeField] List<Vector3> lineIntervalPoints = new List<Vector3>();
     [SerializeField] LineRendererSmoother smoother;
-    public MeshCollider meshCollider;
+    public Collider headCollider;
     public List<ChildRoot> childRoots = new List<ChildRoot>();
     [SerializeField] float SmoothingLength = 2;
     [SerializeField] int SmoothingSections = 8;
@@ -40,10 +40,7 @@ public class RootDrawer : MonoBehaviour
         {
             smoother = GetComponent<LineRendererSmoother>();
         }
-        if (meshCollider == null)
-        {
-            meshCollider = GetComponent<MeshCollider>();
-        }
+
     }
 
     public void AddChildRoot(RootDrawer newRoot, Vector3 growPos)
@@ -70,9 +67,7 @@ public class RootDrawer : MonoBehaviour
             CalculatePath();
             SmoothPath();
         }
-        Mesh mesh = new Mesh();
-        smoother.Line.BakeMesh(mesh);
-        meshCollider.sharedMesh = mesh;
+        headCollider.transform.position = toNewPosition;
     }
 
     private void AddIntervalPoints(Vector3 newPosition)
