@@ -267,10 +267,16 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   smoother: {fileID: 5990701483984011470}
   headCollider: {fileID: 4659977097158584663}
+  parentRoot: {fileID: 0}
   childRoots: []
+  totalSquareLength: 0
   SmoothingLength: 2
   SmoothingSections: 8
   intervalDistance: 2
+  minWidth: 0.1
+  maxWidth: 6
+  LengthToWidthConstant: 0.001
+  childRootLengthWeight: 0.0001
 --- !u!64 &5990701483984011471
 MeshCollider:
   m_ObjectHideFlags: 0

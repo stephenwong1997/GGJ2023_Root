@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
+
 [RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(LineRendererSmoother))]
 public class RootDrawer : MonoBehaviour
 {
     public List<Vector3> LinePoints => linePoints;
+    public Vector3 GetLastPoint => linePoints[^1];
 
     //[SerializeField] LineRenderer lineRenderer;
     [SerializeField] List<Vector3> linePoints = new List<Vector3>();
     [SerializeField] List<Vector3> lineIntervalPoints = new List<Vector3>();
     [SerializeField] LineRendererSmoother smoother;
     public Collider headCollider;
+    public RootDrawer parentRoot;
     public List<ChildRoot> childRoots = new List<ChildRoot>();
     [SerializeField] float SmoothingLength = 2;
     [SerializeField] int SmoothingSections = 8;
@@ -20,18 +24,53 @@ public class RootDrawer : MonoBehaviour
     [Header("Line node interval settings")]
     [SerializeField] float intervalDistance = 1;
 
+    [Header("Line width settings")]
+    [SerializeField] float minWidth;
+    [SerializeField] float maxWidth;
+    [SerializeField] float LengthToWidthConstant;
+    [SerializeField] float childRootLengthWeight;
+
     private BezierCurve[] Curves;
 
-    public Vector3 GetLastPoint
+    private float totalSquareLength;
+
+    private void Awake()
     {
-        get { return linePoints[^1]; }
+        UpdateLineRendererWidthCurve(minWidth);
+        InitTotalSquareLength();
     }
-    public Vector3 GetLastLineIntervalPoints(bool globalPos = false)
+
+    private void UpdateLineRendererWidthCurve(float startWidth)
     {
-        if (globalPos)
-            return lineIntervalPoints[^1] + transform.position;
-        else
-            return lineIntervalPoints[^1];
+        Keyframe[] tempKeys = new Keyframe[2];
+
+        tempKeys[0].weightedMode = WeightedMode.Both;
+        tempKeys[0].inWeight = 0;
+        tempKeys[0].outWeight = 0;
+        tempKeys[0].value = 1;
+        tempKeys[0].time = 0;
+
+        tempKeys[1].weightedMode = WeightedMode.Both;
+        tempKeys[1].inWeight = 0;
+        tempKeys[1].outWeight = 0;
+        tempKeys[1].value = 0.1f;
+        tempKeys[0].time = 1;
+
+        smoother.Line.widthCurve = new AnimationCurve(tempKeys);
+
+        smoother.Line.startWidth = startWidth;
+        smoother.Line.endWidth = startWidth * 0.1f;
+    }
+
+    private void InitTotalSquareLength()
+    {
+        totalSquareLength = 0;
+        Vector3[] positions = new Vector3[smoother.Line.positionCount];
+        smoother.Line.GetPositions(positions);
+        for (int i = 1; i < positions.Length; i++)
+        {
+            totalSquareLength += (positions[i] - positions[i - 1]).sqrMagnitude;
+        }
     }
 
     private void OnValidate()
@@ -42,6 +81,15 @@ public class RootDrawer : MonoBehaviour
         }
 
     }
+
+    public Vector3 GetLastLineIntervalPoints(bool globalPos = false)
+    {
+        if (globalPos)
+            return lineIntervalPoints[^1] + transform.position;
+        else
+            return lineIntervalPoints[^1];
+    }
+
 
     public void AddChildRoot(RootDrawer newRoot, Vector3 growPos)
     {
@@ -56,18 +104,59 @@ public class RootDrawer : MonoBehaviour
         {
             Vector2 localPosition = toNewPosition - transform.position;
 
-            //smoother.Line.positionCount++;
             linePoints.Add(localPosition);
             AddIntervalPoints(localPosition);
-            //smoother.Line.SetPosition(smoother.Line.positionCount - 1, hitObject.point);
-            smoother.Line.positionCount = linePoints.Count;
 
+            smoother.Line.positionCount = linePoints.Count;
             smoother.Line.SetPositions(linePoints.ToArray());
+
+            UpdateTotalSquareLength();
+            UpdateRootWidth();
+
             EnsureCurvesMatchLineRendererPositions();
             CalculatePath();
             SmoothPath();
         }
         headCollider.transform.position = toNewPosition;
+    }
+
+    public void UpdateTotalSquareLength()
+    {
+        if (linePoints.Count < 2)
+            return;
+
+        totalSquareLength += (linePoints[linePoints.Count - 1] - linePoints[linePoints.Count - 2]).sqrMagnitude;
+    }
+
+    public float GetCompleteSquareLength()
+    {
+        if (childRoots.Count == 0)
+            return totalSquareLength;
+
+        float completeSquareLength = 0;
+        foreach (var child in childRoots)
+        {
+            completeSquareLength += child.childRoot.GetCompleteSquareLength();
+        }
+        return completeSquareLength;
+    }
+
+    public void UpdateRootWidth()
+    {
+        float updatedWidth = Mathf.Clamp(totalSquareLength * LengthToWidthConstant + GetCompleteSquareLength() * childRootLengthWeight, minWidth, maxWidth);
+        UpdateLineRendererWidthCurve(updatedWidth);
+
+        UpdateParentRootWidth();
+    }
+
+
+    public void UpdateParentRootWidth()
+    {
+        if (parentRoot != null)
+        {
+            parentRoot.UpdateTotalSquareLength();
+            parentRoot.UpdateRootWidth();
+        }
     }
 
     private void AddIntervalPoints(Vector3 newPosition)
