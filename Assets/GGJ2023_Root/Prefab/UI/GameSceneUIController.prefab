@@ -959,6 +959,7 @@ MonoBehaviour:
   _lifeEnergyBarTweenDuration: 0.3
   _pauseContainer: {fileID: 3617500476391670888}
   _lifeEnergyBar: {fileID: 2122358602}
+  _lifeEnergyBarBackground: {fileID: 1484204585}
   _progressBar: {fileID: 1005637898}
   _subtitle: {fileID: 6800743469117686416}
   _muteSlash: {fileID: 1955749158604008526}
