@@ -29,7 +29,7 @@ public class Score : MonoBehaviour
 
     void Update()
     {
-        scoreText.SetText(player.position.z.ToString("0"));
+        scoreText.SetText(player.position.z.ToString());
         checkscore();
     }
 

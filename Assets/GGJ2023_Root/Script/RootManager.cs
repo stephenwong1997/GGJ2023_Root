@@ -9,9 +9,9 @@ public class RootManager : MonoBehaviour
 
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)][SerializeField] float angle = 40;
-    [Range(0, 180f)][SerializeField] float range = 20;
-    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)] [SerializeField] float angle = 40;
+    [Range(0, 180f)] [SerializeField] float range = 20;
+    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
     [SerializeField] float growInterval = 0.3f;
 
     [Header("Run time reference")]
@@ -20,6 +20,8 @@ public class RootManager : MonoBehaviour
 
     [Header("Object reference")]
     [SerializeField] Transform rootParent;
+    [SerializeField] CapsuleCollider test;
+    Vector3 dir = Vector3.zero;
 
     [Header("Prefab reference")]
     [SerializeField] GameObject rootDrawer;
@@ -29,9 +31,11 @@ public class RootManager : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+    }
 
+    private void Start()
+    {
         StartCoroutine(GrowTowardsMouse());
-
     }
 
     private IEnumerator GrowTowardsMouse()
@@ -43,8 +47,7 @@ public class RootManager : MonoBehaviour
         while (true)
         {
             currentMousePress = Input.GetKey(KeyCode.Mouse0);
-
-            if (currentMousePress == true)
+            if (GrowthRequirement() && currentMousePress == true)
             {
                 bool forceExtendCurrentRoot = false;
                 // If button is held down, force extend the current root and do not build new root
@@ -64,7 +67,53 @@ public class RootManager : MonoBehaviour
             yield return null; //! DO NOT REMOVE OR ELSE INFINITE LOOP AND WILL HANG 
         }
     }
+    //private void Update()
+    //{
+    //    GrowthRequirement();
+    //}
 
+    private bool GrowthRequirement()
+    {
+        // ray sphereCast !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        RaycastHit hit;
+
+        Vector3 from = currentRoot.headCollider.transform.position;
+        Vector3 pointA = from;
+        Vector3 pointB = from;
+        pointA.z = 50;
+        pointB.z = -50;
+
+        Vector3 to = GameManager.instance.GetMouseClickPointOnPlane();
+
+
+        print($"{from} and {to}");
+        Vector3 direction = to - from;
+
+        print(direction.magnitude);
+        int layerMask = 1 << 8; //8 = rock layer
+        if (Physics.CapsuleCast(pointA, pointB, 2, direction, out hit, direction.magnitude, layerMask))
+        {
+            print("blocked by " + hit.collider.name);
+            return false;
+        }
+        return true;
+    }
+    //private void OnDrawGizmos()
+    //{
+
+    //    Vector3 from = currentRoot.headCollider.transform.position;
+    //    Vector3 pointA = from;
+    //    Vector3 pointB = from;
+    //    pointA.z = 50;
+    //    pointB.z = -50;
+
+    //    Vector3 to = GameManager.instance.GetMouseClickPointOnPlane();
+
+    //    Vector3 direction = to - from;
+
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawLine(pointA, pointB);
+    //}
     /// <summary>
     /// 
     /// </summary>
@@ -118,7 +167,7 @@ public class RootManager : MonoBehaviour
         // Square magnitude is more performant than Vector.Distance because no need to square root
         if (Vector3.SqrMagnitude(closestNode - mousePos) < stopGrowDistance * stopGrowDistance)
         {
-            print("Close enough, stop growing!");
+            //print("Close enough, stop growing!");
             return false;
         }
 
@@ -136,7 +185,7 @@ public class RootManager : MonoBehaviour
 
     private void BuildNewRoot(RootDrawer extendFromRoot, Vector3 rootNode, Vector3 headNode)
     {
-        print("BuildNewRoot");
+        //print("BuildNewRoot");
 
         GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
         currentRoot = newRoot.GetComponent<RootDrawer>();

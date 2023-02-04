@@ -117,6 +117,7 @@ public class RootDrawer : MonoBehaviour
             CalculatePath();
             SmoothPath();
         }
+        toNewPosition.z = 0;
         headCollider.transform.position = toNewPosition;
     }
 
