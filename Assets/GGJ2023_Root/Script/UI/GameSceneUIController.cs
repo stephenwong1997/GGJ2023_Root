@@ -40,7 +40,7 @@ public class GameSceneUIController : MonoBehaviour
     private void Start()
     {
         _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnProgressChangedEvent>((e) => UpdateProgress(e.NormalizedValue, e.TweenDuration)));
-        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnLifeEnergyChangedEvent>((e) => UpdateLifeEnergy(e.NormalizedValue)));
+        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnLifeEnergyChangedEvent>((e) => UpdateLifeEnergy(e.NormalizedValue, e.Tween)));
     }
 
     private void OnDestroy()
@@ -187,7 +187,7 @@ public class GameSceneUIController : MonoBehaviour
         ).SetEase(Ease.Linear);
     }
 
-    private void UpdateLifeEnergy(float normalizedLifeEnergy, bool tween = true)
+    private void UpdateLifeEnergy(float normalizedLifeEnergy, bool tween)
     {
         if (_lifeEnergyTween.IsActive())
         {

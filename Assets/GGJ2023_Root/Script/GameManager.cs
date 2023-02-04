@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.TurnOnTrackVolume(0);
         DataManager.Instance.SetTotalProgress(_totalWaterSource);
         DataManager.Instance.SetTotalLifeEnergy(_totalLifeEnergy);
-        DataManager.Instance.ChangeLifeEnergy(_totalLifeEnergy);
+        DataManager.Instance.ResetLifeEnergy();
         DataManager.Instance.ResetProgress();
         ResetLevelController(DataManager.Instance.currentLevel);
         MessageHubSingleton.Instance.Publish(new RestartEvent());

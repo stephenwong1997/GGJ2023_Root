@@ -100,23 +100,24 @@ public class DataManager : MonoBehaviour
         Debug.Log($"DataManager: Total Life Energy set as {_totalLifeEnergy}");
     }
 
-    public void ChangeLifeEnergy(float LifeEnergyToChange)
+    public void ChangeLifeEnergy(float lifeEnergyToChange)
     {
-        if (_currentLifeEnergy + LifeEnergyToChange > _totalLifeEnergy)
-            _totalLifeEnergy = _currentLifeEnergy + LifeEnergyToChange;
+        float maximumChange = _totalLifeEnergy - _currentLifeEnergy;
+        float clampedLifeEnergyToChange = Mathf.Min(lifeEnergyToChange, maximumChange);
 
-        _currentLifeEnergy += LifeEnergyToChange;
+        _currentLifeEnergy += clampedLifeEnergyToChange;
     }
 
     public void ResetLifeEnergy()
     {
-        _currentLifeEnergy = 0;
+        m_currentLifeEnergy = _totalLifeEnergy;
+        MessageHubSingleton.Instance.Publish(new OnLifeEnergyChangedEvent(m_currentLifeEnergy, 1, tween: false));
     }
 
     private void OnLifeEnergyChanged()
     {
         float normalizedLifeEnergy = (float)m_currentLifeEnergy / (float)_totalLifeEnergy;
-        // Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
+        Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
         MessageHubSingleton.Instance.Publish(new OnLifeEnergyChangedEvent(m_currentLifeEnergy, normalizedLifeEnergy));
     }
     #endregion
@@ -140,11 +141,13 @@ public class OnLifeEnergyChangedEvent
 {
     public float ChangedValue;
     public float NormalizedValue;
+    public bool Tween;
 
-    public OnLifeEnergyChangedEvent(float changedValue, float normalizedValue)
+    public OnLifeEnergyChangedEvent(float changedValue, float normalizedValue, bool tween = true)
     {
         ChangedValue = changedValue;
         NormalizedValue = normalizedValue;
+        Tween = tween;
     }
 }
 
