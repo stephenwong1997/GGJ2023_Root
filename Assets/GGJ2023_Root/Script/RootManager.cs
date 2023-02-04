@@ -17,13 +17,17 @@ public class RootManager : MonoBehaviour
     [Header("Run time reference")]
     [SerializeField] RootDrawer currentRoot;
     [SerializeField] List<RootDrawer> roots;
+    [SerializeField] Transform currentContainer;
 
     [Header("Object reference")]
     [SerializeField] Transform rootParent;
 
+
     [Header("Prefab reference")]
+    [SerializeField] GameObject mainRootDrawer;
     [SerializeField] GameObject rootDrawer;
     [SerializeField] GameObject sphereMark;
+    [SerializeField] GameObject emptyContainer;
 
     private void Awake()
     {
@@ -34,6 +38,15 @@ public class RootManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(GrowTowardsMouse());
+    }
+    public void ResetRoots()
+    {
+        Destroy(rootParent.GetChild(0).gameObject);
+        GameObject newContainer = Instantiate(emptyContainer, rootParent);
+        currentContainer = newContainer.transform;
+        roots.Clear();
+        roots.Add(currentContainer.GetComponentInChildren<RootDrawer>());
+        currentRoot = roots[0];
     }
 
     private IEnumerator GrowTowardsMouse()
@@ -210,7 +223,7 @@ public class RootManager : MonoBehaviour
     {
         //print("BuildNewRoot");
 
-        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, rootParent);
+        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, currentContainer);
         currentRoot = newRoot.GetComponent<RootDrawer>();
         currentRoot.parentRoot = extendFromRoot;
 

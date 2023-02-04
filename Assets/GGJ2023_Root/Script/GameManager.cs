@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.SetTotalLifeEnergy(_totalLifeEnergy);
         DataManager.Instance.ChangeLifeEnergy(_totalLifeEnergy);
         DataManager.Instance.ResetProgress();
-
+        RootManager.instance.ResetRoots();
         switch (level)
         {
             case 1:
