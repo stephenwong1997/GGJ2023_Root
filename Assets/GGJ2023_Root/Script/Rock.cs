@@ -21,6 +21,14 @@ public class Rock : MonoBehaviour
                 OnFailedGrowthRequirement();
             }
         }));
+
+        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<RestartEvent>((e) =>
+        {
+            if (_failSequence.IsActive())
+                _failSequence.Kill();
+
+            _rockSprite.color = Color.white;
+        }));
     }
 
     private void OnDestroy()

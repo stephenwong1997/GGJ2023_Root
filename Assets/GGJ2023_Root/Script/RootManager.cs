@@ -41,12 +41,16 @@ public class RootManager : MonoBehaviour
     }
     public void ResetRoots()
     {
+        StopAllCoroutines();
+
         Destroy(rootParent.GetChild(0).gameObject);
         GameObject newContainer = Instantiate(emptyContainer, rootParent);
         currentContainer = newContainer.transform;
         roots.Clear();
         roots.Add(currentContainer.GetComponentInChildren<RootDrawer>());
         currentRoot = roots[0];
+
+        StartCoroutine(GrowTowardsMouse());
     }
 
     private IEnumerator GrowTowardsMouse()

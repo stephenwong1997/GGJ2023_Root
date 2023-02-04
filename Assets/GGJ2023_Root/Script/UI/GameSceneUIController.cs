@@ -27,6 +27,9 @@ public class GameSceneUIController : MonoBehaviour
     }
     bool m_muteButtonState;
 
+    Tween _progressTween;
+    Tween _lifeEnergyTween;
+
     private void Awake()
     {
         UpdateProgress(0, tween: false);
@@ -162,7 +165,19 @@ public class GameSceneUIController : MonoBehaviour
 
     private void UpdateProgress(float normalizedProgress, float tweenDuration)
     {
-        DOTween.To(
+        if (_progressTween.IsActive())
+        {
+            _progressTween.Kill();
+        }
+
+        // Force reset and dont tween
+        if (normalizedProgress == 0)
+        {
+            _progressBar.fillAmount = 0;
+            return;
+        }
+
+        _progressTween = DOTween.To(
             getter: () => _progressBar.fillAmount,
             setter: x => _progressBar.fillAmount = x,
             endValue: normalizedProgress,
@@ -172,15 +187,22 @@ public class GameSceneUIController : MonoBehaviour
 
     private void UpdateLifeEnergy(float normalizedLifeEnergy, bool tween = true)
     {
+        if (_lifeEnergyTween.IsActive())
+        {
+            _lifeEnergyTween.Kill();
+        }
+
         if (!tween)
             _lifeEnergyBar.fillAmount = normalizedLifeEnergy;
         else
-            DOTween.To(
+        {
+            _lifeEnergyTween = DOTween.To(
                 getter: () => _lifeEnergyBar.fillAmount,
                 setter: x => _lifeEnergyBar.fillAmount = x,
                 endValue: normalizedLifeEnergy,
                 duration: _progressBarTweenDuration
             );
+        }
     }
 }
 

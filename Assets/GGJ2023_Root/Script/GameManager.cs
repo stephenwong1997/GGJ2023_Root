@@ -50,6 +50,9 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.ChangeLifeEnergy(_totalLifeEnergy);
         DataManager.Instance.ResetProgress();
         RootManager.instance.ResetRoots();
+
+        MessageHubSingleton.Instance.Publish(new RestartEvent());
+
         switch (level)
         {
             case 1:
@@ -135,3 +138,5 @@ public class GameManager : MonoBehaviour
         return hitObject;
     }
 }
+
+public class RestartEvent { }

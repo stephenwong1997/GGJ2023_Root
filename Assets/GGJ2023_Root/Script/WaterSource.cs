@@ -17,6 +17,7 @@ public class WaterSource : MonoBehaviour, IRootOnTriggerEnter
     [SerializeField] Collider _collider;
 
     bool _isDepleting;
+    Tween tween;
 
     private void Awake()
     {
@@ -25,6 +26,9 @@ public class WaterSource : MonoBehaviour, IRootOnTriggerEnter
 
     public void Reset()
     {
+        if (tween.IsActive())
+            tween.Kill();
+
         _isDepleting = false;
         _waterProgressBar.fillAmount = 1;
         _collider.enabled = true;
@@ -43,7 +47,7 @@ public class WaterSource : MonoBehaviour, IRootOnTriggerEnter
 
     private void TweenDeplete()
     {
-        DOTween.To(
+        tween = DOTween.To(
             getter: () => _waterProgressBar.fillAmount,
             setter: x => _waterProgressBar.fillAmount = x,
             endValue: 0,
