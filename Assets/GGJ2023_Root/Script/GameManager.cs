@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     [Header("Object reference")]
     public Camera mainCamera;
     [SerializeField] GameSceneUIController uIController;
+    [SerializeField] GameObject progressBar;
+    [SerializeField] GameObject lifeEnergyBar;
 
     [Header("Level Setting")]
     [SerializeField] int _totalWaterSource = 5;
@@ -110,7 +112,10 @@ public class GameManager : MonoBehaviour
         if (level == 4)
         {
             MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(false));
-            yield return new WaitForSeconds(3);
+            progressBar.SetActive(false);
+            lifeEnergyBar.SetActive(false);
+
+            yield return new WaitForSeconds(5);
             uIController.OnQuitButtonClicked();
         }
     }

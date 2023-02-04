@@ -1152,6 +1152,8 @@ MonoBehaviour:
   lowerBoundaryY: -260
   mainCamera: {fileID: 1539548708}
   uIController: {fileID: 146219138}
+  progressBar: {fileID: 1300798457965765693}
+  lifeEnergyBar: {fileID: 1300798457965765694}
   _totalWaterSource: 5
   _totalLifeEnergy: 200
   levelControllers:
@@ -1167,6 +1169,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1255236296, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1878192617, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -11.163086
@@ -1245,6 +1251,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
+--- !u!1 &1300798457965765693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1878192616, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
+  m_PrefabInstance: {fileID: 1300798457965765692}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1300798457965765694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1255236296, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
+  m_PrefabInstance: {fileID: 1300798457965765692}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2413943735210897079
 PrefabInstance:
   m_ObjectHideFlags: 0
