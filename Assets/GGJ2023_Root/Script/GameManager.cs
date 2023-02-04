@@ -35,7 +35,10 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        RestartLevel(1);
+        // RestartLevel(1);
+
+        DataManager.Instance.currentLevel = 0;
+        RestartLevel(DataManager.Instance.currentLevel);
     }
 
     private void Update()
@@ -69,6 +72,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel(int level)
     {
+        Debug.Log($"GameManager.RestartLevel(): level: {level}");
+
         StartCoroutine(RestartCoroutine(level));
     }
     private IEnumerator RestartCoroutine(int level)
@@ -86,7 +91,8 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.ResetLifeEnergy();
         DataManager.Instance.ResetProgress();
 
-        ResetLevelController(DataManager.Instance.currentLevel);
+        // ResetLevelController(DataManager.Instance.currentLevel);
+        ResetLevelController(level);
 
         MessageHubSingleton.Instance.Publish(new RestartEvent());
 

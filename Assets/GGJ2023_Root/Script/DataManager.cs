@@ -68,7 +68,8 @@ public class DataManager : MonoBehaviour
     {
         m_lastWaterDepleteTime = waterDepleteTime;
         _currentProgress += progressToAdd;
-        AudioManager.instance.TurnOnTrackVolume(_currentProgress);
+
+        AudioManager.instance.TurnOnTrackVolume(_currentProgress); // currentProgress = 1 => turn on 2nd track; currentProgress = 2 => turn on 3rd tracks etc
     }
 
     public void ResetProgress()
@@ -117,7 +118,7 @@ public class DataManager : MonoBehaviour
     private void OnLifeEnergyChanged()
     {
         float normalizedLifeEnergy = (float)m_currentLifeEnergy / (float)_totalLifeEnergy;
-        Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
+        // Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
         MessageHubSingleton.Instance.Publish(new OnLifeEnergyChangedEvent(m_currentLifeEnergy, normalizedLifeEnergy));
     }
     #endregion
