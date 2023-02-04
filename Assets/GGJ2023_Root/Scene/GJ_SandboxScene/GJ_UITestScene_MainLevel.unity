@@ -1838,7 +1838,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 50
+  orthographic size: 65
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1957,6 +1957,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6590319528335995967, guid: e4556b9a4907922418c9ee904f9b32a7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 70.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590319528335995967, guid: e4556b9a4907922418c9ee904f9b32a7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7706500684645567240, guid: e4556b9a4907922418c9ee904f9b32a7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8777590362559718698, guid: e4556b9a4907922418c9ee904f9b32a7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 115456ba5505432419bea73a8e514bea, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4556b9a4907922418c9ee904f9b32a7, type: 3}
 --- !u!114 &1557153856 stripped
@@ -2086,7 +2102,7 @@ MonoBehaviour:
   mouseSphereRadius: 60
   plantViewY: 90
   upperBoundaryY: 90
-  lowerBoundaryY: -60
+  lowerBoundaryY: -90
   mainCamera: {fileID: 1539548708}
   _totalWaterSource: 5
   _totalLifeEnergy: 200
