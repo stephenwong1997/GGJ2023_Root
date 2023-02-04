@@ -21,10 +21,11 @@ public class GameManager : MonoBehaviour
     [Header("Level Setting")]
     [SerializeField] int _totalWaterSource = 5;
     [SerializeField] int _totalLifeEnergy;
-    [SerializeField] List<SourceController> level1Controllers;
-    [SerializeField] List<SourceController> level2Controllers;
-    [SerializeField] List<SourceController> level3Controllers;
-    [SerializeField] List<SourceController> level4Controllers;
+    [SerializeField] List<LevelController> levelControllers;
+    //[SerializeField] List<SourceController> level1Controllers;
+    //[SerializeField] List<SourceController> level2Controllers;
+    //[SerializeField] List<SourceController> level3Controllers;
+    //[SerializeField] List<SourceController> level4Controllers;
 
     private void Awake()
     {
@@ -49,39 +50,15 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.SetTotalLifeEnergy(_totalLifeEnergy);
         DataManager.Instance.ChangeLifeEnergy(_totalLifeEnergy);
         DataManager.Instance.ResetProgress();
-        RootManager.instance.ResetRoots();
-
+        ResetLevelController(DataManager.Instance.currentLevel);
         MessageHubSingleton.Instance.Publish(new RestartEvent());
+    }
 
-        switch (level)
-        {
-            case 1:
-                for (int i = 0; i < level1Controllers.Count; i++)
-                {
-                    level1Controllers[i].Reset();
-                }
-                break;
-            case 2:
-                for (int i = 0; i < level1Controllers.Count; i++)
-                {
-                    level2Controllers[i].Reset();
-                }
-                break;
-            case 3:
-                for (int i = 0; i < level1Controllers.Count; i++)
-                {
-                    level3Controllers[i].Reset();
-                }
-                break;
-            case 4:
-                for (int i = 0; i < level1Controllers.Count; i++)
-                {
-                    level4Controllers[i].Reset();
-                }
-                break;
-
-        }
-
+    private void ResetLevelController(int currentLevel)
+    {
+        mainCamera.transform.position = levelControllers[currentLevel].cameraDefaultPos.position;
+        RootManager.instance.ResetRoots(levelControllers[currentLevel]);
+        levelControllers[currentLevel].ResetSouces();
     }
 
     private void CameraControl()

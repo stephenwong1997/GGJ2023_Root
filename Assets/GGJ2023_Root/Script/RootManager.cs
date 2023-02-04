@@ -7,27 +7,19 @@ public class RootManager : MonoBehaviour
 {
     public static RootManager instance;
 
+    [Header("Run time reference")]
+    LevelController currentLevelController;
+
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)][SerializeField] float angle = 40;
-    [Range(0, 180f)][SerializeField] float range = 20;
-    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)] [SerializeField] float angle = 40;
+    [Range(0, 180f)] [SerializeField] float range = 20;
+    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
     [SerializeField] float growInterval = 0.3f;
 
-    [Header("Run time reference")]
-    [SerializeField] RootDrawer currentRoot;
-    [SerializeField] List<RootDrawer> roots;
-    [SerializeField] Transform currentContainer;
-
-    [Header("Object reference")]
-    [SerializeField] Transform rootParent;
-
-
     [Header("Prefab reference")]
-    [SerializeField] GameObject mainRootDrawer;
-    [SerializeField] GameObject rootDrawer;
-    [SerializeField] GameObject sphereMark;
-    [SerializeField] GameObject emptyContainer;
+    public GameObject rootDrawer;
+    public GameObject emptyContainer;
 
     private void Awake()
     {
@@ -39,16 +31,11 @@ public class RootManager : MonoBehaviour
     {
         StartCoroutine(GrowTowardsMouse());
     }
-    public void ResetRoots()
+    public void ResetRoots(LevelController levelController)
     {
         StopAllCoroutines();
-
-        Destroy(rootParent.GetChild(0).gameObject);
-        GameObject newContainer = Instantiate(emptyContainer, rootParent);
-        currentContainer = newContainer.transform;
-        roots.Clear();
-        roots.Add(currentContainer.GetComponentInChildren<RootDrawer>());
-        currentRoot = roots[0];
+        currentLevelController = levelController;
+        levelController.ResetRoots();
 
         StartCoroutine(GrowTowardsMouse());
     }
@@ -198,8 +185,8 @@ public class RootManager : MonoBehaviour
         }
         else
         {
-            closestRoot = currentRoot;
-            closestNode = currentRoot.GetLastLineIntervalPoints(true);
+            closestRoot = currentLevelController.currentRoot;
+            closestNode = currentLevelController.currentRoot.GetLastLineIntervalPoints(true);
             closestDistance = 0;
         }
 
@@ -222,7 +209,7 @@ public class RootManager : MonoBehaviour
             return false;
         }
 
-        if (forceExtendCurrentRoot || (roots.Contains(closestRoot) && closestNode == closestRoot.GetLastLineIntervalPoints(true)))
+        if (forceExtendCurrentRoot || (currentLevelController.roots.Contains(closestRoot) && closestNode == closestRoot.GetLastLineIntervalPoints(true)))
         {
             ExtendClosestRoot(closestRoot, closestNode, mousePos);
         }
@@ -238,26 +225,26 @@ public class RootManager : MonoBehaviour
     {
         //print("BuildNewRoot");
 
-        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, currentContainer);
-        currentRoot = newRoot.GetComponent<RootDrawer>();
-        currentRoot.parentRoot = extendFromRoot;
+        GameObject newRoot = Instantiate(rootDrawer, rootNode, Quaternion.identity, currentLevelController.currentContainer);
+        currentLevelController.currentRoot = newRoot.GetComponent<RootDrawer>();
+        currentLevelController.currentRoot.parentRoot = extendFromRoot;
 
-        roots.Add(currentRoot);
+        currentLevelController.roots.Add(currentLevelController.currentRoot);
 
         Vector3 localPosOfFromRoot = rootNode - extendFromRoot.transform.position;
-        extendFromRoot.AddChildRoot(currentRoot, localPosOfFromRoot);
+        extendFromRoot.AddChildRoot(currentLevelController.currentRoot, localPosOfFromRoot);
 
         // currentRoot.CreateNewRootPosition(RandomArcCirclePoint(rootNode, headNode));
 
         Vector3 randomHeadNode = RandomArcCirclePoint(rootNode, headNode);
-        StartCoroutine(ExtendRootPosition(currentRoot, rootNode, randomHeadNode));
+        StartCoroutine(ExtendRootPosition(currentLevelController.currentRoot, rootNode, randomHeadNode));
     }
 
     private void ExtendClosestRoot(RootDrawer closestRoot, Vector3 rootPos, Vector3 headNode)
     {
         // closestRoot.CreateNewRootPosition(RandomArcCirclePoint(rootPos, headNode));
 
-        currentRoot = closestRoot; //! Remember to update the current root!
+        currentLevelController.currentRoot = closestRoot; //! Remember to update the current root!
         Vector3 randomHeadNode = RandomArcCirclePoint(rootPos, headNode);
         StartCoroutine(ExtendRootPosition(closestRoot, rootPos, randomHeadNode));
     }
