@@ -422,7 +422,7 @@ MonoBehaviour:
         BeforeEntryFadeDelay: 0
         EntryFadeDuration: 0.2
         AfterEntryFadeDelay: 0
-        BeforeExitFadeDelay: 0
+        BeforeExitFadeDelay: 0.2
         ExitFadeDuration: 0.2
         ProgressInterpolationSpeed: 5
         FadeMode: 0
