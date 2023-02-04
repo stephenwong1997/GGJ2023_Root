@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     {
         // RestartLevel(1);
 
-        DataManager.Instance.currentLevel = 3;
+        DataManager.Instance.currentLevel = 0;
         RestartLevel(DataManager.Instance.currentLevel, skipStartFade: true);
     }
 
