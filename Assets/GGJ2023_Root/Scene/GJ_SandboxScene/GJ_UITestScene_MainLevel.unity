@@ -1098,11 +1098,12 @@ MonoBehaviour:
   currentRoot: {fileID: 2034501404}
   roots:
   - {fileID: 2034501404}
+  currentContainer: {fileID: 1211452218}
   rootParent: {fileID: 376768487}
-  emptyContainer: {fileID: 695731759166209774, guid: af00da03f355c494088b171452d26a7f, type: 3}
   mainRootDrawer: {fileID: 0}
   rootDrawer: {fileID: 5990701483984011457, guid: 9fd0a717025154e408825b5fc956414e, type: 3}
   sphereMark: {fileID: 6303847285564557541, guid: a85c289cd0d83cc4c935ed71419b59a0, type: 3}
+  emptyContainer: {fileID: 695731759166209773, guid: af00da03f355c494088b171452d26a7f, type: 3}
 --- !u!1 &762815068
 GameObject:
   m_ObjectHideFlags: 0
