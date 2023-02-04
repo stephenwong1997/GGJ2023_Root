@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         // RestartLevel(1);
 
         DataManager.Instance.currentLevel = 0;
-        RestartLevel(DataManager.Instance.currentLevel);
+        RestartLevel(DataManager.Instance.currentLevel, skipStartFade: true);
     }
 
     private void Update()
@@ -70,16 +70,23 @@ public class GameManager : MonoBehaviour
         RestartLevel(level);
     }
 
-    public void RestartLevel(int level)
+    public void RestartLevel(int level, bool skipStartFade = false)
     {
         Debug.Log($"GameManager.RestartLevel(): level: {level}");
 
-        StartCoroutine(RestartCoroutine(level));
+        StartCoroutine(RestartCoroutine(level, skipStartFade));
     }
-    private IEnumerator RestartCoroutine(int level)
+    private IEnumerator RestartCoroutine(int level, bool skipStartFade)
     {
-        TransitionUIController.Instance.FadeOut();
-        yield return new WaitForSeconds(1.2f);
+        if (!skipStartFade)
+        {
+            TransitionUIController.Instance.FadeOut();
+            yield return new WaitForSeconds(1.2f);
+        }
+        else
+        {
+            TransitionUIController.Instance.ForceFadeOut();
+        }
 
         MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(true));
 

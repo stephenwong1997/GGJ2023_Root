@@ -13,11 +13,19 @@ public class TransitionUIController : MonoBehaviour
         if (Instance == null)
             Instance = this;
     }
+
+    public void ForceFadeOut()
+    {
+        fadingImage.raycastTarget = true;
+        fadingImage.color = Color.black;
+    }
+
     public void FadeOut()
     {
         fadingImage.raycastTarget = true;
-        fadingImage.DOColor(Color.black,1.2f);
-    } 
+        fadingImage.DOColor(Color.black, 1.2f);
+    }
+
     public void FadeIn()
     {
         fadingImage.DOColor(Color.clear, 1.2f);
