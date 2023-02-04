@@ -97,7 +97,18 @@ public class RootManager : MonoBehaviour
         if (Physics.CapsuleCast(capsulePointA, capsulePointB, CAPSULE_RADIUS, direction, out hit, direction.magnitude, layerMask))
         {
             print("blocked by " + hit.collider.name);
+            MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(hit.collider.gameObject));
             return false;
+        }
+        else
+        {
+            RaycastHit mouseHit = GameManager.instance.GetMouseRaycastHit();
+            if (mouseHit.collider.gameObject.layer == LayerMask.NameToLayer("Rock"))
+            {
+                print("mouse on rock");
+                MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(mouseHit.collider.gameObject));
+                return false;
+            }
         }
 
         return true;
@@ -324,4 +335,14 @@ public class RootManager : MonoBehaviour
     // }
 
 
+}
+
+public class FailedGrowthRequirementEvent
+{
+    public GameObject blockingGameObject;
+
+    public FailedGrowthRequirementEvent(GameObject blockingGameObject)
+    {
+        this.blockingGameObject = blockingGameObject;
+    }
 }

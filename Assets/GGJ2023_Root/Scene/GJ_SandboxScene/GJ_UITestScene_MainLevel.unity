@@ -2329,6 +2329,7 @@ GameObject:
   - component: {fileID: 7825945025927904533}
   - component: {fileID: 7825945026160480020}
   - component: {fileID: 7825945026160480021}
+  - component: {fileID: 7825945026160480022}
   m_Layer: 8
   m_Name: RockCollider
   m_TagString: Rock
@@ -2364,6 +2365,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 7825945025927904533}
   _meshCollider: {fileID: 7825945026160480020}
+--- !u!114 &7825945026160480022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7825945025927904534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1089be9e980e4204dba03d3ce8fd4943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rockSprite: {fileID: 7825945025927904533}
+  _tweenDuration: 0.6
 --- !u!114 &7825945026899030092
 MonoBehaviour:
   m_ObjectHideFlags: 0

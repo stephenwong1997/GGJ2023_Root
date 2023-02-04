@@ -91,4 +91,12 @@ public class GameManager : MonoBehaviour
         }
         return Vector3.zero;
     }
+
+    public RaycastHit GetMouseRaycastHit()
+    {
+        Ray ray = GameManager.instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitObject;
+        Physics.Raycast(ray, out hitObject);
+        return hitObject;
+    }
 }

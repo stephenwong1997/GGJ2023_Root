@@ -273,10 +273,10 @@ MonoBehaviour:
   SmoothingLength: 2
   SmoothingSections: 8
   intervalDistance: 2
-  minWidth: 1
-  maxWidth: 6
-  LengthToWidthConstant: 0.0001
-  childRootLengthWeight: 0.0001
+  minWidth: 3
+  maxWidth: 8
+  LengthToWidthConstant: 0.00001
+  childRootLengthWeight: 0.00001
 --- !u!64 &5990701483984011471
 MeshCollider:
   m_ObjectHideFlags: 0
