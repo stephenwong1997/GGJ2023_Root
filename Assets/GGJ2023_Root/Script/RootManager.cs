@@ -9,9 +9,9 @@ public class RootManager : MonoBehaviour
 
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)] [SerializeField] float angle = 40;
-    [Range(0, 180f)] [SerializeField] float range = 20;
-    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)][SerializeField] float angle = 40;
+    [Range(0, 180f)][SerializeField] float range = 20;
+    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
     [SerializeField] float growInterval = 0.3f;
 
     [Header("Run time reference")]
@@ -73,45 +73,56 @@ public class RootManager : MonoBehaviour
             return false;
         }
 
-        const float CAPSULE_HEIGHT = 100;
-        const float CAPSULE_RADIUS = 0.2f;
-
         RaycastHit hit;
 
-        // Vector3 from = currentRoot.headCollider.transform.position;
-        // Vector3 to = GameManager.instance.GetMouseClickPointOnPlane();
+        // const float CAPSULE_HEIGHT = 100;
+        // const float CAPSULE_RADIUS = 0.2f;
+
+        // Vector3 capsulePointA = from;
+        // Vector3 capsulePointB = from;
+        // capsulePointA.z = CAPSULE_HEIGHT / 2;
+        // capsulePointB.z = -CAPSULE_HEIGHT / 2;
+
+        // Vector3 toDirection = to;
+        // toDirection.z = 0;
+        // Vector3 fromDirection = from;
+        // fromDirection.z = 0;
+
+        // Vector3 direction = toDirection - fromDirection;
+
+        // int layerMask = 1 << 8; //8 = rock layer
+        // if (Physics.CapsuleCast(capsulePointA, capsulePointB, CAPSULE_RADIUS, direction, out hit, direction.magnitude, layerMask))
+        // {
+        //     print("blocked by " + hit.collider.name);
+        //     MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(hit.collider.gameObject));
+        //     return false;
+        // }
+
+        const float CAPSULE_START_HEIGHT = -100f;
+        const float CAPSULE_RADIUS = 1f;
+        const float MAX_DISTANCE = 100f;
 
         Vector3 capsulePointA = from;
-        Vector3 capsulePointB = from;
-        capsulePointA.z = CAPSULE_HEIGHT / 2;
-        capsulePointB.z = -CAPSULE_HEIGHT / 2;
+        Vector3 capsulePointB = to;
+        capsulePointA.z = CAPSULE_START_HEIGHT;
+        capsulePointB.z = CAPSULE_START_HEIGHT;
 
-        Vector3 toDirection = to;
-        toDirection.z = 0;
-        Vector3 fromDirection = from;
-        fromDirection.z = 0;
-
-        Vector3 direction = toDirection - fromDirection;
-
-        // print($"{from} and {to}");
-        // print(direction.magnitude);
+        Vector3 direction = new Vector3(0, 0, 1);
 
         int layerMask = 1 << 8; //8 = rock layer
-        if (Physics.CapsuleCast(capsulePointA, capsulePointB, CAPSULE_RADIUS, direction, out hit, direction.magnitude, layerMask))
+        if (Physics.CapsuleCast(capsulePointA, capsulePointB, CAPSULE_RADIUS, direction, out hit, maxDistance: MAX_DISTANCE, layerMask))
         {
             print("blocked by " + hit.collider.name);
             MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(hit.collider.gameObject));
             return false;
         }
-        else
+
+        RaycastHit mouseHit = GameManager.instance.GetMouseRaycastHit();
+        if (mouseHit.collider.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
-            RaycastHit mouseHit = GameManager.instance.GetMouseRaycastHit();
-            if (mouseHit.collider.gameObject.layer == LayerMask.NameToLayer("Rock"))
-            {
-                print("mouse on rock");
-                MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(mouseHit.collider.gameObject));
-                return false;
-            }
+            print("mouse on rock");
+            MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(mouseHit.collider.gameObject));
+            return false;
         }
 
         return true;
