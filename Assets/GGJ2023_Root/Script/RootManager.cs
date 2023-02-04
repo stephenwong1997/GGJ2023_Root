@@ -9,9 +9,9 @@ public class RootManager : MonoBehaviour
 
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)] [SerializeField] float angle = 40;
-    [Range(0, 180f)] [SerializeField] float range = 20;
-    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)][SerializeField] float angle = 40;
+    [Range(0, 180f)][SerializeField] float range = 20;
+    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
     [SerializeField] float growInterval = 0.3f;
 
     [Header("Run time reference")]
@@ -47,7 +47,7 @@ public class RootManager : MonoBehaviour
         while (true)
         {
             currentMousePress = Input.GetKey(KeyCode.Mouse0);
-            if (GrowthRequirement() && currentMousePress == true)
+            if (currentMousePress == true)
             {
                 bool forceExtendCurrentRoot = false;
                 // If button is held down, force extend the current root and do not build new root
@@ -67,35 +67,39 @@ public class RootManager : MonoBehaviour
             yield return null; //! DO NOT REMOVE OR ELSE INFINITE LOOP AND WILL HANG 
         }
     }
-    //private void Update()
-    //{
-    //    GrowthRequirement();
-    //}
 
-    private bool GrowthRequirement()
+    private bool GrowthRequirement(Vector3 from, Vector3 to)
     {
-        // ray sphereCast !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const float CAPSULE_HEIGHT = 100;
+        const float CAPSULE_RADIUS = 0.2f;
+
         RaycastHit hit;
 
-        Vector3 from = currentRoot.headCollider.transform.position;
-        Vector3 pointA = from;
-        Vector3 pointB = from;
-        pointA.z = 50;
-        pointB.z = -50;
+        // Vector3 from = currentRoot.headCollider.transform.position;
+        // Vector3 to = GameManager.instance.GetMouseClickPointOnPlane();
 
-        Vector3 to = GameManager.instance.GetMouseClickPointOnPlane();
+        Vector3 capsulePointA = from;
+        Vector3 capsulePointB = from;
+        capsulePointA.z = CAPSULE_HEIGHT / 2;
+        capsulePointB.z = -CAPSULE_HEIGHT / 2;
 
+        Vector3 toDirection = to;
+        toDirection.z = 0;
+        Vector3 fromDirection = from;
+        fromDirection.z = 0;
 
-        print($"{from} and {to}");
-        Vector3 direction = to - from;
+        Vector3 direction = toDirection - fromDirection;
 
-        print(direction.magnitude);
+        // print($"{from} and {to}");
+        // print(direction.magnitude);
+
         int layerMask = 1 << 8; //8 = rock layer
-        if (Physics.CapsuleCast(pointA, pointB, 2, direction, out hit, direction.magnitude, layerMask))
+        if (Physics.CapsuleCast(capsulePointA, capsulePointB, CAPSULE_RADIUS, direction, out hit, direction.magnitude, layerMask))
         {
             print("blocked by " + hit.collider.name);
             return false;
         }
+
         return true;
     }
     //private void OnDrawGizmos()
@@ -168,6 +172,11 @@ public class RootManager : MonoBehaviour
         if (Vector3.SqrMagnitude(closestNode - mousePos) < stopGrowDistance * stopGrowDistance)
         {
             //print("Close enough, stop growing!");
+            return false;
+        }
+
+        if (!GrowthRequirement(closestNode, mousePos))
+        {
             return false;
         }
 
