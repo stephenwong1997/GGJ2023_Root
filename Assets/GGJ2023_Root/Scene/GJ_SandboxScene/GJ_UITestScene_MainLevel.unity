@@ -438,6 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8bab33dbe5de5b429838d9786905603, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pauseContainer: {fileID: 2040892975}
   canGrow: 0
   angle: 40
   range: 10
@@ -1087,6 +1088,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beff090ae4fc6a04ab4fc9b70ead661c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2040892975 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3617500476391670888, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
+  m_PrefabInstance: {fileID: 1300798457965765692}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2081659109
 GameObject:
   m_ObjectHideFlags: 0

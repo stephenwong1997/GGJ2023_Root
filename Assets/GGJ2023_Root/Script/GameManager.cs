@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour
 
         if (level == 4)
         {
-            uIController.gameObject.SetActive(false);
+            MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(false));
             yield return new WaitForSeconds(3);
             uIController.OnQuitButtonClicked();
         }
