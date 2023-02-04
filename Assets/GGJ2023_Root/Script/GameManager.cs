@@ -55,9 +55,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-
+            RestartLevel(4);
         }
     }
+
     private IEnumerator ToNextLevel(int level)
     {
         if (level > 0)
@@ -108,9 +109,16 @@ public class GameManager : MonoBehaviour
 
     private void ResetLevelController(int currentLevel)
     {
-        mainCamera.transform.position = levelControllers[currentLevel].cameraDefaultPos.position;
-        RootManager.instance.ResetRoots(levelControllers[currentLevel]);
-        levelControllers[currentLevel].ResetSources();
+        if (currentLevel < 4)
+        {
+            mainCamera.transform.position = levelControllers[currentLevel].cameraDefaultPos.position;
+            RootManager.instance.ResetRoots(levelControllers[currentLevel]);
+            levelControllers[currentLevel].ResetSources();
+        }
+        else // winning view
+        {
+            mainCamera.transform.position = levelControllers[currentLevel].cameraDefaultPos.position;
+        }
     }
 
     public IEnumerator FinishGameAnimation()
