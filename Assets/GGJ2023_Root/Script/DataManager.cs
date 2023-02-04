@@ -40,7 +40,7 @@ public class DataManager : MonoBehaviour
             OnLifeEnergyChanged();
         }
     }
-    float m_currentLifeEnergy;
+    [SerializeField] float m_currentLifeEnergy;
 
     /// <summary>
     /// Total LifeEnergy => The total capacity of life energy to grow root.
