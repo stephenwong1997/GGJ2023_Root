@@ -13,15 +13,43 @@ public class LevelController : MonoBehaviour
     public RootDrawer currentRoot;
     public List<RootDrawer> roots;
     public Transform currentContainer;
+    public GameObject seedSprite;
+    public GameObject cropSprite;
 
+    public void SetSeedToCrop()
+    {
+        if (seedSprite == null || cropSprite == null)
+        {
+            Debug.LogError("No seed/crop sprite!");
+            return;
+        }
+
+        seedSprite.SetActive(false);
+        cropSprite.SetActive(true);
+    }
+
+    public void SetCropToSeed()
+    {
+        if (seedSprite == null || cropSprite == null)
+        {
+            Debug.LogError("No seed/crop sprite!");
+            return;
+        }
+
+        seedSprite.SetActive(true);
+        cropSprite.SetActive(false);
+    }
 
     public void ResetSources()
     {
+        SetCropToSeed();
+
         for (int i = 0; i < sourceControllers.Count; i++)
         {
             sourceControllers[i].Reset();
         }
     }
+
     public void ResetRoots()
     {
         Destroy(rootParent.GetChild(0).gameObject);

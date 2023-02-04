@@ -609,6 +609,8 @@ MonoBehaviour:
   currentRoot: {fileID: 0}
   roots: []
   currentContainer: {fileID: 0}
+  seedSprite: {fileID: 520948197}
+  cropSprite: {fileID: 2137453744}
 --- !u!1 &6211360082970163410
 GameObject:
   m_ObjectHideFlags: 0
