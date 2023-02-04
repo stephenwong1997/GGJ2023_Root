@@ -243,6 +243,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6961507067561404544, guid: 0aa10e396d1f43349b8af1411149553e, type: 3}
   m_PrefabInstance: {fileID: 6961507066502136118}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &146219138 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1300798457268312466, guid: d5b26c40ccb854d47a8ba3dc0a9abb53, type: 3}
+  m_PrefabInstance: {fileID: 1300798457965765692}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee46467fcca6b8e439c558da227bf1a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &244005157 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8794149356117997974, guid: dac77a9e32f02e041bf3c507cf665d78, type: 3}
@@ -1126,6 +1137,7 @@ MonoBehaviour:
   upperBoundaryY: 90
   lowerBoundaryY: -130
   mainCamera: {fileID: 1539548708}
+  uIController: {fileID: 146219138}
   _totalWaterSource: 5
   _totalLifeEnergy: 200
   levelControllers:
