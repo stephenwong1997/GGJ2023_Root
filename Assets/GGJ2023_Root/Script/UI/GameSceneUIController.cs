@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using MoreMountains.Feedbacks;
 
 public class GameSceneUIController : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class GameSceneUIController : MonoBehaviour
     [SerializeField] Image _progressBar;
     [SerializeField] TextMeshProUGUI _subtitle;
     [SerializeField] Image _muteSlash;
+    [SerializeField] MMF_Player _returnToStartSceneFeedback;
 
     List<Guid> _tokenList = new List<Guid>();
 
@@ -134,6 +136,7 @@ public class GameSceneUIController : MonoBehaviour
     public void OnQuitButtonClicked()
     {
         Debug.Log("Quit clicked!");
+        _returnToStartSceneFeedback.PlayFeedbacks();
     }
 
     public void OnQuitButtonHoverEnter()
