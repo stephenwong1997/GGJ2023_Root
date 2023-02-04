@@ -57,6 +57,12 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator ToNextLevel(int level)
     {
+        Debug.Log($"To next level: {level}");
+        if (level > 0)
+        {
+            levelControllers[level - 1].SetSeedToCrop();
+        }
+
         mainCamera.transform.DOMoveY(plantViewY, 3f);
         yield return new WaitForSeconds(5);
         RestartLevel(level);
