@@ -57,7 +57,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921072376}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 52, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -436,7 +436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &968573139777694957
 Transform:
   m_ObjectHideFlags: 0
@@ -947,8 +947,8 @@ MonoBehaviour:
   currentRoot: {fileID: 0}
   roots: []
   currentContainer: {fileID: 0}
-  seedSprite: {fileID: 0}
-  cropSprite: {fileID: 0}
+  seedSprite: {fileID: 4017502627647823935}
+  cropSprite: {fileID: 1172119167356926575}
 --- !u!1 &6017218987642527567
 GameObject:
   m_ObjectHideFlags: 0
