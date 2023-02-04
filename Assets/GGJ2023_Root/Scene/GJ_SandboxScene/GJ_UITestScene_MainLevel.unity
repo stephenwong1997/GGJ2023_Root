@@ -2254,7 +2254,7 @@ MonoBehaviour:
   lowerBoundaryY: -60
   mainCamera: {fileID: 1539548708}
   _totalWaterSource: 5
-  _totalLifeEnergy: 500000
+  _totalLifeEnergy: 200
   level1Controllers:
   - {fileID: 2063190448}
   level2Controllers: []
@@ -2786,6 +2786,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1114370449}
     m_Modifications:
+    - target: {fileID: 1695616517059533954, guid: cb8e8d4aad15d564ebe1471c42342499, type: 3}
+      propertyPath: energyAmount
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 1695616517417041088, guid: cb8e8d4aad15d564ebe1471c42342499, type: 3}
       propertyPath: m_RootOrder
       value: 0

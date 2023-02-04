@@ -269,7 +269,7 @@ public class RootManager : MonoBehaviour
         const float BUFFER = 5; // Randomly set
 
         // In case FPS gets too low
-        if (Time.deltaTime > SECONDS_PER_FRAME)
+        if (Time.deltaTime > SECONDS_PER_FRAME && DataManager.Instance.GetLifeEnergyLeft() > 0)
         {
             root.CreateNewRootPosition(headNode);
             yield break;
@@ -284,11 +284,17 @@ public class RootManager : MonoBehaviour
         WaitForSeconds waitForNextFrame = new WaitForSeconds(SECONDS_PER_FRAME);
         for (int i = 0; i < totalNumberOfFrames - BUFFER; i++)
         {
+            if (DataManager.Instance.GetLifeEnergyLeft() <= 0)
+                yield break;
+
             Vector3 intervalPoint = rootNode + (i + 1) * frameIntervalVector;
             root.CreateNewRootPosition(intervalPoint);
 
             yield return waitForNextFrame;
         }
+
+        if (DataManager.Instance.GetLifeEnergyLeft() <= 0)
+            yield break;
 
         root.CreateNewRootPosition(headNode);
     }

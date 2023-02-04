@@ -89,7 +89,7 @@ public class DataManager : MonoBehaviour
     {
         return _currentLifeEnergy;
     }
-    public void SetTotalLifeEnergy(int totalLifeEnergy)
+    public void SetTotalLifeEnergy(float totalLifeEnergy)
     {
         _totalLifeEnergy = totalLifeEnergy;
         Debug.Log($"DataManager: Total Life Energy set as {_totalLifeEnergy}");
@@ -97,6 +97,9 @@ public class DataManager : MonoBehaviour
 
     public void ChangeLifeEnergy(float LifeEnergyToChange)
     {
+        if (_currentLifeEnergy + LifeEnergyToChange > _totalLifeEnergy)
+            _totalLifeEnergy = _currentLifeEnergy + LifeEnergyToChange;
+
         _currentLifeEnergy += LifeEnergyToChange;
     }
 
@@ -108,7 +111,7 @@ public class DataManager : MonoBehaviour
     private void OnLifeEnergyChanged()
     {
         float normalizedLifeEnergy = (float)m_currentLifeEnergy / (float)_totalLifeEnergy;
-        Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
+        // Debug.Log($"DataManager: Current LifeEnergy updated ({m_currentLifeEnergy}/{_totalLifeEnergy} = {normalizedLifeEnergy})");
         MessageHubSingleton.Instance.Publish(new OnLifeEnergyChangedEvent(m_currentLifeEnergy, normalizedLifeEnergy));
     }
     #endregion

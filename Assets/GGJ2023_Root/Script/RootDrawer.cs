@@ -108,7 +108,7 @@ public class RootDrawer : MonoBehaviour
         {
             Vector2 localPosition = toNewPosition - transform.position;
 
-            float lengthUsed = localPosition.magnitude;
+            float lengthUsed = (localPosition - (Vector2)GetLastPoint).magnitude;
             DataManager.Instance.ChangeLifeEnergy(-lengthUsed);
 
             linePoints.Add(localPosition);
@@ -149,14 +149,15 @@ public class RootDrawer : MonoBehaviour
         {
             completeSquareLength += child.childRoot.GetCompleteSquareLength();
         }
-        return completeSquareLength;
+        return Mathf.Sqrt(completeSquareLength);
     }
 
     public void UpdateRootWidth()
     {
-        float updatedWidth = Mathf.Clamp(totalSquareLength * LengthToWidthConstant + GetCompleteSquareLength() * childRootLengthWeight, minWidth, maxWidth);
-        UpdateLineRendererWidthCurve(updatedWidth);
+        float updatedWidth = Mathf.Clamp(minWidth + totalSquareLength * LengthToWidthConstant + GetCompleteSquareLength() * childRootLengthWeight, minWidth, maxWidth);
+        // Debug.Log($"Total square length: {totalSquareLength}, updatedWidth: {updatedWidth}");
 
+        UpdateLineRendererWidthCurve(updatedWidth);
         UpdateParentRootWidth();
     }
 

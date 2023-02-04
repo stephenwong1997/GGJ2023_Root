@@ -275,8 +275,8 @@ MonoBehaviour:
   intervalDistance: 2
   minWidth: 3
   maxWidth: 8
-  LengthToWidthConstant: 0.00001
-  childRootLengthWeight: 0.00001
+  LengthToWidthConstant: 0.001
+  childRootLengthWeight: 0.000001
 --- !u!64 &5990701483984011471
 MeshCollider:
   m_ObjectHideFlags: 0

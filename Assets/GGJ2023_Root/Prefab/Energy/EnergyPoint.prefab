@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 1695616517059533981}
-  energyAmount: 3000
+  energyAmount: 50
 --- !u!1 &1695616518210971926
 GameObject:
   m_ObjectHideFlags: 0

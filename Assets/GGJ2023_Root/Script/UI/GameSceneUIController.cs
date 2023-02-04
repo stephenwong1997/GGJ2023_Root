@@ -10,6 +10,7 @@ public class GameSceneUIController : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] float _progressBarTweenDuration = 1f;
+    [SerializeField] float _lifeEnergyBarTweenDuration = 0.3f;
 
     [Header("References")]
     [SerializeField] GameObject _pauseContainer;
@@ -113,6 +114,7 @@ public class GameSceneUIController : MonoBehaviour
 
     public void OnRestartButtonClicked()
     {
+        OnResumeButtonClicked();
         GameManager.instance.RestartLevel(DataManager.Instance.currentLevel);
         Debug.Log("Restart clicked!");
     }
@@ -200,8 +202,8 @@ public class GameSceneUIController : MonoBehaviour
                 getter: () => _lifeEnergyBar.fillAmount,
                 setter: x => _lifeEnergyBar.fillAmount = x,
                 endValue: normalizedLifeEnergy,
-                duration: _progressBarTweenDuration
-            );
+                duration: _lifeEnergyBarTweenDuration
+            ).SetEase(Ease.Linear);
         }
     }
 }
