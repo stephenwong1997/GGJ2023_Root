@@ -385,7 +385,20 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6B7B\u8B8A\u614B\u4F6C\njintii\nGJ The Game Dev\nSky Ng\nWHA\nHin\n"
+  m_text: 'Stephen Wong
+
+    Jintii
+
+    GJ The Game Dev
+
+    Sky Ng
+
+    William
+    Ha
+
+    Hin
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 93a04cb1b8d81154e89198b0b5161474, type: 2}
   m_sharedMaterial: {fileID: 5981178149287917784, guid: 93a04cb1b8d81154e89198b0b5161474, type: 2}
@@ -1782,7 +1795,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -372.1, y: 151.94568}
+  m_AnchoredPosition: {x: -375, y: 162}
   m_SizeDelta: {x: 698.29285, y: 303.89142}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1822323004
