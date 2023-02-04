@@ -6,9 +6,9 @@ public class RootHitbox : MonoBehaviour
     {
         //Debug.Log("RootHitbox.OnTriggerEnter");
 
-        if (!other.TryGetComponent(out WaterSource waterSource)) return;
+        if (!other.TryGetComponent(out IRootOnTriggerEnter enteredObject)) return;
 
-        waterSource.OnRootTriggerEnter();
+        enteredObject.OnRootTriggerEnter();
     }
 
 }

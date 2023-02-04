@@ -9,9 +9,9 @@ public class RootManager : MonoBehaviour
 
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)][SerializeField] float angle = 40;
-    [Range(0, 180f)][SerializeField] float range = 20;
-    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)] [SerializeField] float angle = 40;
+    [Range(0, 180f)] [SerializeField] float range = 20;
+    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
     [SerializeField] float growInterval = 0.3f;
 
     [Header("Run time reference")]
@@ -20,8 +20,6 @@ public class RootManager : MonoBehaviour
 
     [Header("Object reference")]
     [SerializeField] Transform rootParent;
-    [SerializeField] CapsuleCollider test;
-    Vector3 dir = Vector3.zero;
 
     [Header("Prefab reference")]
     [SerializeField] GameObject rootDrawer;
@@ -70,6 +68,11 @@ public class RootManager : MonoBehaviour
 
     private bool GrowthRequirement(Vector3 from, Vector3 to)
     {
+        if (DataManager.Instance.GetLifeEnergyLeft() <= 0)
+        {
+            return false;
+        }
+
         const float CAPSULE_HEIGHT = 100;
         const float CAPSULE_RADIUS = 0.2f;
 

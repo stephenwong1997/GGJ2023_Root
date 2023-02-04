@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections.Generic;
 
-public class WaterSource : MonoBehaviour
+public class WaterSource : MonoBehaviour, IRootOnTriggerEnter
 {
     [Header("Settings")]
     [SerializeField] float _depleteTime;
@@ -18,6 +19,11 @@ public class WaterSource : MonoBehaviour
     bool _isDepleting;
 
     private void Awake()
+    {
+        Reset();
+    }
+
+    public void Reset()
     {
         _isDepleting = false;
         _waterProgressBar.fillAmount = 1;

@@ -108,12 +108,14 @@ public class RootDrawer : MonoBehaviour
         {
             Vector2 localPosition = toNewPosition - transform.position;
 
+            float lengthUsed = localPosition.magnitude;
+            DataManager.Instance.ChangeLifeEnergy(-lengthUsed);
+
             linePoints.Add(localPosition);
             AddIntervalPoints(localPosition);
 
             smoother.Line.positionCount = linePoints.Count;
             smoother.Line.SetPositions(linePoints.ToArray());
-
             UpdateTotalSquareLength();
             UpdateRootWidth();
 

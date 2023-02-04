@@ -110,6 +110,7 @@ public class GameSceneUIController : MonoBehaviour
 
     public void OnRestartButtonClicked()
     {
+        GameManager.instance.RestartLevel(DataManager.Instance.currentLevel);
         Debug.Log("Restart clicked!");
     }
 

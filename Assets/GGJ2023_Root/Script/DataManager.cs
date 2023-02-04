@@ -31,7 +31,7 @@ public class DataManager : MonoBehaviour
     /// LifeEnergy => The left bar. Increases when the root eats energy. Decreases when the root grows.
     /// </summary>
     /// <value></value>
-    int _currentLifeEnergy
+    float _currentLifeEnergy
     {
         get => m_currentLifeEnergy;
         set
@@ -40,12 +40,12 @@ public class DataManager : MonoBehaviour
             OnLifeEnergyChanged();
         }
     }
-    int m_currentLifeEnergy;
+    float m_currentLifeEnergy;
 
     /// <summary>
     /// Total LifeEnergy => The total capacity of life energy to grow root.
     /// </summary>
-    int _totalLifeEnergy;
+    float _totalLifeEnergy;
 
     private void Awake()
     {
@@ -85,13 +85,17 @@ public class DataManager : MonoBehaviour
     #endregion
 
     #region LifeEnergy
+    public float GetLifeEnergyLeft()
+    {
+        return _currentLifeEnergy;
+    }
     public void SetTotalLifeEnergy(int totalLifeEnergy)
     {
         _totalLifeEnergy = totalLifeEnergy;
         Debug.Log($"DataManager: Total Life Energy set as {_totalLifeEnergy}");
     }
 
-    public void ChangeLifeEnergy(int LifeEnergyToChange)
+    public void ChangeLifeEnergy(float LifeEnergyToChange)
     {
         _currentLifeEnergy += LifeEnergyToChange;
     }
@@ -126,10 +130,10 @@ public class OnProgressChangedEvent
 
 public class OnLifeEnergyChangedEvent
 {
-    public int ChangedValue;
+    public float ChangedValue;
     public float NormalizedValue;
 
-    public OnLifeEnergyChangedEvent(int changedValue, float normalizedValue)
+    public OnLifeEnergyChangedEvent(float changedValue, float normalizedValue)
     {
         ChangedValue = changedValue;
         NormalizedValue = normalizedValue;
