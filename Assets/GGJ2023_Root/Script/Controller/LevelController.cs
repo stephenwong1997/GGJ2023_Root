@@ -15,7 +15,7 @@ public class LevelController : MonoBehaviour
     public Transform currentContainer;
 
 
-    public void ResetSouces()
+    public void ResetSources()
     {
         for (int i = 0; i < sourceControllers.Count; i++)
         {

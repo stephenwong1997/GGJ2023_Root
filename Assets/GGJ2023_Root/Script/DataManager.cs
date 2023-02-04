@@ -81,7 +81,12 @@ public class DataManager : MonoBehaviour
         float normalizedProgress = (float)m_currentProgress / (float)_totalProgress;
         Debug.Log($"DataManager: Current progress updated ({m_currentProgress}/{_totalProgress} = {normalizedProgress})");
         MessageHubSingleton.Instance.Publish(new OnProgressChangedEvent(m_currentProgress, normalizedProgress, m_lastWaterDepleteTime));
+        if (normalizedProgress >= 1)
+        {
+            GameManager.instance.ToNextLevel();
+        }
     }
+
     #endregion
 
     #region LifeEnergy

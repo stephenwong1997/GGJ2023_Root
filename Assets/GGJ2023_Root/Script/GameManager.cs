@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] bool debugMouseSphere;
     [SerializeField] float mouseSphereRadius;
+    [SerializeField] float plantViewY;
     [SerializeField] float upperBoundaryY;
     [SerializeField] float lowerBoundaryY;
 
@@ -42,8 +43,33 @@ public class GameManager : MonoBehaviour
         CameraControl();
     }
 
+    public void ToNextLevel()
+    {
+        int currentLevel = ++DataManager.Instance.currentLevel;
+        if (currentLevel <= 3)
+        {
+            StartCoroutine(ToNextLevel(currentLevel));
+        }
+        else
+        {
+
+        }
+    }
+    private IEnumerator ToNextLevel(int level)
+    {
+        mainCamera.transform.DOMoveY(plantViewY, 3f);
+        yield return new WaitForSeconds(5);
+        RestartLevel(level);
+    }
+
     public void RestartLevel(int level)
     {
+        StartCoroutine(RestartCoroutine(level));
+    }
+    private IEnumerator RestartCoroutine(int level)
+    {
+        TransitionUIController.Instance.FadeOut();
+        yield return new WaitForSeconds(1.2f);
         AudioManager.instance.ResetBGM(level);
         AudioManager.instance.TurnOnTrackVolume(0);
         DataManager.Instance.SetTotalProgress(_totalWaterSource);
@@ -52,13 +78,19 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.ResetProgress();
         ResetLevelController(DataManager.Instance.currentLevel);
         MessageHubSingleton.Instance.Publish(new RestartEvent());
+        TransitionUIController.Instance.FadeIn();
     }
 
     private void ResetLevelController(int currentLevel)
     {
         mainCamera.transform.position = levelControllers[currentLevel].cameraDefaultPos.position;
         RootManager.instance.ResetRoots(levelControllers[currentLevel]);
-        levelControllers[currentLevel].ResetSouces();
+        levelControllers[currentLevel].ResetSources();
+    }
+
+    public IEnumerator FinishGameAnimation()
+    {
+        yield return null;
     }
 
     private void CameraControl()
