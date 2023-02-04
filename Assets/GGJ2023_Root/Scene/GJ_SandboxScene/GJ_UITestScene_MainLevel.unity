@@ -2085,7 +2085,7 @@ MonoBehaviour:
   debugMouseSphere: 1
   mouseSphereRadius: 60
   plantViewY: 90
-  upperBoundaryY: 0
+  upperBoundaryY: 90
   lowerBoundaryY: -60
   mainCamera: {fileID: 1539548708}
   _totalWaterSource: 5
