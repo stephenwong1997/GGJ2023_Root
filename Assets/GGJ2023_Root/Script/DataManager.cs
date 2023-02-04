@@ -4,6 +4,8 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
 
+    public int currentLevel = 1;
+
     /// <summary>
     /// Progress => The top bar. Increases when the root drinks water.
     /// </summary>
@@ -66,6 +68,7 @@ public class DataManager : MonoBehaviour
     {
         m_lastWaterDepleteTime = waterDepleteTime;
         _currentProgress += progressToAdd;
+        AudioManager.instance.TurnOnTrackVolume(_currentProgress);
     }
 
     public void ResetProgress()

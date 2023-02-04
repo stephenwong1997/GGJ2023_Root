@@ -18,15 +18,32 @@ public class GameManager : MonoBehaviour
     [Header("Object reference")]
     public Camera mainCamera;
 
+    [Header("Level Setting")]
+    [SerializeField] int _totalWaterSource = 5;
+    [SerializeField] int _totalLifeEnergy;
+
     private void Awake()
     {
         if (instance == null)
             instance = this;
     }
+    private void Start()
+    {
+        RestartLevel(1);
+    }
 
     private void Update()
     {
         CameraControl();
+    }
+
+    public void RestartLevel(int level)
+    {
+        AudioManager.instance.ResetBGM(level);
+        AudioManager.instance.TurnOnTrackVolume(0);
+        DataManager.Instance.SetTotalProgress(_totalWaterSource);
+        DataManager.Instance.SetTotalLifeEnergy(_totalLifeEnergy);
+        DataManager.Instance.ResetProgress();
     }
 
     private void CameraControl()
