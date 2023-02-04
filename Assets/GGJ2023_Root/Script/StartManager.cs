@@ -12,6 +12,10 @@ public class StartManager : MonoBehaviour
     [Header("Transition Settings")]
     [SerializeField] float _tweenDuration = 1f;
 
+    [Header("Audio References")]
+    [SerializeField] AudioClip _startingAudioClip;
+    [SerializeField] AudioSource _audioSource;
+
     [Header("Video References")]
     [SerializeField] RenderTexture _videoRenderTexture;
     [SerializeField] VideoPlayer _startingVideo;
@@ -36,6 +40,13 @@ public class StartManager : MonoBehaviour
         _title.color = Color.clear;
 
         _videoRenderTexture.Release(); // Set render texture to black
+        yield return null;
+
+        if (_startingAudioClip != null)
+        {
+            _audioSource.clip = _startingAudioClip;
+            _audioSource.Play();
+        }
 
         _startingVideo.Prepare();
         while (!_startingVideo.isPrepared)
