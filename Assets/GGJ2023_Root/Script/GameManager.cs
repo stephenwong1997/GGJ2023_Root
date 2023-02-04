@@ -52,14 +52,14 @@ public class GameManager : MonoBehaviour
     public void ToNextLevel()
     {
         int currentLevel = ++DataManager.Instance.currentLevel;
-        if (currentLevel <= 3)
+        //if (currentLevel <= 3)
         {
             StartCoroutine(ToNextLevel(currentLevel));
         }
-        else
-        {
-            RestartLevel(4);
-        }
+        //else
+        //{
+        //    RestartLevel(4);
+        //}
     }
 
     private IEnumerator ToNextLevel(int level)
