@@ -26,6 +26,7 @@ public class StartManager : MonoBehaviour
     [SerializeField] Image _creditsButton;
     [SerializeField] Image _exitButton;
     [SerializeField] TextMeshProUGUI _title;
+    [SerializeField] GameObject _creditsPanel;
 
     private IEnumerator Start()
     {
@@ -38,6 +39,7 @@ public class StartManager : MonoBehaviour
         _creditsButton.color = Color.clear;
         _exitButton.color = Color.clear;
         _title.color = Color.clear;
+        _creditsPanel.SetActive(false);
 
         _videoRenderTexture.Release(); // Set render texture to black
         yield return null;
@@ -79,5 +81,10 @@ public class StartManager : MonoBehaviour
     {
         Debug.Log("StartManager.OnExitButtonClicked()");
         Application.Quit();
+    }
+
+    public void OnCreditButtonClicked()
+    {
+        _creditsPanel.SetActive(!_creditsPanel.activeSelf);
     }
 }

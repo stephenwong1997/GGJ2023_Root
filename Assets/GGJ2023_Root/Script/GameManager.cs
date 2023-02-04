@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Object reference")]
     public Camera mainCamera;
+    [SerializeField] GameSceneUIController uIController;
 
     [Header("Level Setting")]
     [SerializeField] int _totalWaterSource = 5;
@@ -105,6 +106,13 @@ public class GameManager : MonoBehaviour
         MessageHubSingleton.Instance.Publish(new RestartEvent());
 
         TransitionUIController.Instance.FadeIn();
+
+        if (level == 4)
+        {
+            MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(false));
+            yield return new WaitForSeconds(3);
+            uIController.OnQuitButtonClicked();
+        }
     }
 
     private void ResetLevelController(int currentLevel)

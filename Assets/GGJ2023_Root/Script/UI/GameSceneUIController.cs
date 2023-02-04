@@ -16,6 +16,7 @@ public class GameSceneUIController : MonoBehaviour
     [Header("References")]
     [SerializeField] GameObject _pauseContainer;
     [SerializeField] Image _lifeEnergyBar;
+    [SerializeField] Image _lifeEnergyBarBackground;
     [SerializeField] Image _progressBar;
     [SerializeField] TextMeshProUGUI _subtitle;
     [SerializeField] Image _muteSlash;
@@ -36,6 +37,7 @@ public class GameSceneUIController : MonoBehaviour
 
     Tween _progressTween;
     Tween _lifeEnergyTween;
+    Sequence _lifeEnergyRedSequence;
 
     private void Awake()
     {
@@ -51,6 +53,11 @@ public class GameSceneUIController : MonoBehaviour
         {
             _onScreenRestart.SetActive(e.isToggle);
             _onScreenPause.SetActive(e.isToggle);
+        }));
+        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<RestartEvent>((e) =>
+        {
+            if (_lifeEnergyRedSequence.IsActive())
+                _lifeEnergyRedSequence.Kill();
         }));
     }
 
@@ -216,6 +223,26 @@ public class GameSceneUIController : MonoBehaviour
                 endValue: normalizedLifeEnergy,
                 duration: _lifeEnergyBarTweenDuration
             ).SetEase(Ease.Linear);
+        }
+
+        if (normalizedLifeEnergy <= 0)
+        {
+            Debug.Log("Playing life energy bar red flash");
+
+            const float duration = 0.6f;
+
+            if (_lifeEnergyRedSequence.IsActive())
+                _lifeEnergyRedSequence.Kill();
+
+            _lifeEnergyRedSequence = DOTween.Sequence();
+            _lifeEnergyRedSequence
+            .Append(
+                _lifeEnergyBarBackground.DOColor(Color.red, duration)
+            )
+            .Append(
+                _lifeEnergyBarBackground.DOColor(Color.white, duration)
+            )
+            .SetLoops(-1);
         }
     }
 }

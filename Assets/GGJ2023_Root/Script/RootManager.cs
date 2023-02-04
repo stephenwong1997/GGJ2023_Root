@@ -9,12 +9,13 @@ public class RootManager : MonoBehaviour
 
     [Header("Run time reference")]
     LevelController currentLevelController;
+    [SerializeField] GameObject _pauseContainer;
 
     [Header("Root expand value reference")]
     [SerializeField] bool canGrow = false;
-    [Range(0, 180f)] [SerializeField] float angle = 40;
-    [Range(0, 180f)] [SerializeField] float range = 20;
-    [Range(0, 180f)] [SerializeField] float stopGrowDistance = 3;
+    [Range(0, 180f)][SerializeField] float angle = 40;
+    [Range(0, 180f)][SerializeField] float range = 20;
+    [Range(0, 180f)][SerializeField] float stopGrowDistance = 3;
     [SerializeField] float growInterval = 0.3f;
 
     [Header("Prefab reference")]
@@ -77,30 +78,11 @@ public class RootManager : MonoBehaviour
             return false;
         }
 
+        // Do not allow growth while paused
+        if (_pauseContainer.activeSelf)
+            return false;
+
         RaycastHit hit;
-
-        // const float CAPSULE_HEIGHT = 100;
-        // const float CAPSULE_RADIUS = 0.2f;
-
-        // Vector3 capsulePointA = from;
-        // Vector3 capsulePointB = from;
-        // capsulePointA.z = CAPSULE_HEIGHT / 2;
-        // capsulePointB.z = -CAPSULE_HEIGHT / 2;
-
-        // Vector3 toDirection = to;
-        // toDirection.z = 0;
-        // Vector3 fromDirection = from;
-        // fromDirection.z = 0;
-
-        // Vector3 direction = toDirection - fromDirection;
-
-        // int layerMask = 1 << 8; //8 = rock layer
-        // if (Physics.CapsuleCast(capsulePointA, capsulePointB, CAPSULE_RADIUS, direction, out hit, direction.magnitude, layerMask))
-        // {
-        //     print("blocked by " + hit.collider.name);
-        //     MessageHubSingleton.Instance.Publish<FailedGrowthRequirementEvent>(new(hit.collider.gameObject));
-        //     return false;
-        // }
 
         const float CAPSULE_START_HEIGHT = -100f;
         const float CAPSULE_RADIUS = 1f;
