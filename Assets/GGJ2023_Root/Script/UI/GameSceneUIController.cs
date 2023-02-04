@@ -19,6 +19,10 @@ public class GameSceneUIController : MonoBehaviour
     [SerializeField] Image _progressBar;
     [SerializeField] TextMeshProUGUI _subtitle;
     [SerializeField] Image _muteSlash;
+    [SerializeField] GameObject _onScreenRestart;
+    [SerializeField] GameObject _onScreenPause;
+
+    [Header("Feedbacks")]
     [SerializeField] MMF_Player _returnToStartSceneFeedback;
 
     List<Guid> _tokenList = new List<Guid>();
@@ -43,6 +47,11 @@ public class GameSceneUIController : MonoBehaviour
     {
         _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnProgressChangedEvent>((e) => UpdateProgress(e.NormalizedValue, e.TweenDuration)));
         _tokenList.Add(MessageHubSingleton.Instance.Subscribe<OnLifeEnergyChangedEvent>((e) => UpdateLifeEnergy(e.NormalizedValue, e.Tween)));
+        _tokenList.Add(MessageHubSingleton.Instance.Subscribe<ToggleOnScreenButtonsEvent>((e) =>
+        {
+            _onScreenRestart.SetActive(e.isToggle);
+            _onScreenPause.SetActive(e.isToggle);
+        }));
     }
 
     private void OnDestroy()
@@ -208,6 +217,16 @@ public class GameSceneUIController : MonoBehaviour
                 duration: _lifeEnergyBarTweenDuration
             ).SetEase(Ease.Linear);
         }
+    }
+}
+
+public class ToggleOnScreenButtonsEvent
+{
+    public bool isToggle;
+
+    public ToggleOnScreenButtonsEvent(bool isToggle)
+    {
+        this.isToggle = isToggle;
     }
 }
 
