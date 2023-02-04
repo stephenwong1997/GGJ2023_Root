@@ -962,6 +962,8 @@ MonoBehaviour:
   _progressBar: {fileID: 1005637898}
   _subtitle: {fileID: 6800743469117686416}
   _muteSlash: {fileID: 1955749158604008526}
+  _onScreenRestart: {fileID: 5524406657105623391}
+  _onScreenPause: {fileID: 1300798458313797478}
   _returnToStartSceneFeedback: {fileID: 1368772567850466364}
 --- !u!1 &1300798457414221250
 GameObject:

@@ -57,11 +57,10 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator ToNextLevel(int level)
     {
-        Debug.Log($"To next level: {level}");
         if (level > 0)
-        {
             levelControllers[level - 1].SetSeedToCrop();
-        }
+
+        MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(false));
 
         mainCamera.transform.DOMoveY(plantViewY, 3f);
         yield return new WaitForSeconds(5);
@@ -76,14 +75,21 @@ public class GameManager : MonoBehaviour
     {
         TransitionUIController.Instance.FadeOut();
         yield return new WaitForSeconds(1.2f);
+
+        MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(true));
+
         AudioManager.instance.ResetBGM(level);
         AudioManager.instance.TurnOnTrackVolume(0);
+
         DataManager.Instance.SetTotalProgress(_totalWaterSource);
         DataManager.Instance.SetTotalLifeEnergy(_totalLifeEnergy);
         DataManager.Instance.ResetLifeEnergy();
         DataManager.Instance.ResetProgress();
+
         ResetLevelController(DataManager.Instance.currentLevel);
+
         MessageHubSingleton.Instance.Publish(new RestartEvent());
+
         TransitionUIController.Instance.FadeIn();
     }
 
