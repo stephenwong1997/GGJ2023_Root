@@ -7,6 +7,9 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
 
     [SerializeField] AudioSource[] BGMAudioSources;
+    [SerializeField] AudioSource SFXAudioSources;
+    [SerializeField] AudioClip drinkWater;
+    [SerializeField] AudioClip gainEnergy;
     [SerializeField] AudioClip[] Level1BGM;
     [SerializeField] AudioClip[] Level2BGM;
     [SerializeField] AudioClip[] Level3BGM;
@@ -18,6 +21,25 @@ public class AudioManager : MonoBehaviour
             instance = this;
     }
 
+    public void DrinkWaterSFX()
+    {
+        SFXAudioSources.PlayOneShot(drinkWater);
+    }
+    public void GainEnergySFX()
+    {
+        SFXAudioSources.PlayOneShot(gainEnergy);
+    }
+
+    public void LoopGainEnergyWaterSFX()
+    {
+        SFXAudioSources.clip = gainEnergy;
+        SFXAudioSources.loop = true;
+        SFXAudioSources.Play();
+    }
+    public void StopGainEnergyWaterSFX()
+    {
+        SFXAudioSources.Stop();
+    }
     public void ResetBGM(int level)
     {
         Debug.Log($"AudioManager.ResetBGM(): level: {level}");

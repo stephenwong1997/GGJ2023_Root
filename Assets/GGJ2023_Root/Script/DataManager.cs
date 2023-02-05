@@ -66,6 +66,10 @@ public class DataManager : MonoBehaviour
 
     public void AddProgress(int progressToAdd, float waterDepleteTime)
     {
+        if (progressToAdd > 0)
+        {
+            AudioManager.instance.DrinkWaterSFX();
+        }
         m_lastWaterDepleteTime = waterDepleteTime;
         _currentProgress += progressToAdd;
 
@@ -99,10 +103,19 @@ public class DataManager : MonoBehaviour
     {
         _totalLifeEnergy = totalLifeEnergy;
         Debug.Log($"DataManager: Total Life Energy set as {_totalLifeEnergy}");
+
     }
 
-    public void ChangeLifeEnergy(float lifeEnergyToChange)
+    public void ChangeLifeEnergy(float lifeEnergyToChange, bool noSFX = false)
     {
+        if (!noSFX)
+        {
+            if (lifeEnergyToChange > 0)
+            {
+                AudioManager.instance.GainEnergySFX();
+            }
+        }
+
         float maximumChange = _totalLifeEnergy - _currentLifeEnergy;
         float clampedLifeEnergyToChange = Mathf.Min(lifeEnergyToChange, maximumChange);
 

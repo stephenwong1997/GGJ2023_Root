@@ -53,11 +53,13 @@ public class LifeEnergyPoolSource : MonoBehaviour, IRootOnTriggerEnter
     }
     private IEnumerator RechargeEnergy()
     {
+        AudioManager.instance.LoopGainEnergyWaterSFX();
         for (float i = 0; i < _depleteTime; i += _depleteTime / 20)
         {
-            DataManager.Instance.ChangeLifeEnergy(maxEnergyAmount / 20);
+            DataManager.Instance.ChangeLifeEnergy(maxEnergyAmount / 20, true);
             yield return new WaitForSeconds(_depleteTime / 20);
         }
+        AudioManager.instance.StopGainEnergyWaterSFX();
     }
 
     private void TweenDeplete()

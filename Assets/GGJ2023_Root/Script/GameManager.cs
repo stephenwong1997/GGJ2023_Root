@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameSceneUIController uIController;
     [SerializeField] GameObject progressBar;
     [SerializeField] GameObject lifeEnergyBar;
+    [SerializeField] Scrollbar scrollBar;
 
     [Header("Level Setting")]
     [SerializeField] int _totalWaterSource = 5;
@@ -52,14 +54,7 @@ public class GameManager : MonoBehaviour
     public void ToNextLevel()
     {
         int currentLevel = ++DataManager.Instance.currentLevel;
-        //if (currentLevel <= 3)
-        {
-            StartCoroutine(ToNextLevel(currentLevel));
-        }
-        //else
-        //{
-        //    RestartLevel(4);
-        //}
+        StartCoroutine(ToNextLevel(currentLevel));
     }
 
     private IEnumerator ToNextLevel(int level)
@@ -114,6 +109,7 @@ public class GameManager : MonoBehaviour
             MessageHubSingleton.Instance.Publish(new ToggleOnScreenButtonsEvent(false));
             progressBar.SetActive(false);
             lifeEnergyBar.SetActive(false);
+            scrollBar.gameObject.SetActive(false);
 
             yield return new WaitForSeconds(5);
             uIController.OnQuitButtonClicked();
@@ -160,6 +156,7 @@ public class GameManager : MonoBehaviour
                 }
                 moveTo.z = -10;
                 mainCamera.transform.position = moveTo;
+                scrollBar.value = (mainCamera.transform.position.y - lowerBoundaryY) / (upperBoundaryY - lowerBoundaryY);
             }
         }
     }
