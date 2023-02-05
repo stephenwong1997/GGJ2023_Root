@@ -22,6 +22,7 @@ public class GameSceneUIController : MonoBehaviour
     [SerializeField] Image _muteSlash;
     [SerializeField] GameObject _onScreenRestart;
     [SerializeField] GameObject _onScreenPause;
+    [SerializeField] Button muteButton;
 
     [Header("Feedbacks")]
     [SerializeField] MMF_Player _returnToStartSceneFeedback;
@@ -59,6 +60,11 @@ public class GameSceneUIController : MonoBehaviour
             if (_lifeEnergyRedSequence.IsActive())
                 _lifeEnergyRedSequence.Kill();
         }));
+        if (CentralSetting.Instance)
+        {
+            _muteButtonState = CentralSetting.Instance.muteAudio;
+            CentralSetting.Instance.UpdateAudioMute();
+        }
     }
 
     private void OnDestroy()
@@ -99,6 +105,11 @@ public class GameSceneUIController : MonoBehaviour
     {
         Debug.Log("Mute clicked!");
         _muteButtonState = !_muteButtonState;
+        if (CentralSetting.Instance)
+        {
+            CentralSetting.Instance.muteAudio = _muteButtonState;
+            CentralSetting.Instance.UpdateAudioMute();
+        }
     }
 
     public void OnMuteButtonHoverEnter()

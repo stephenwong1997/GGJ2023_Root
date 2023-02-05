@@ -20,6 +20,19 @@ public class AudioManager : MonoBehaviour
         if (instance == null)
             instance = this;
     }
+    private void Start()
+    {
+        UpdateAudioMute();
+    }
+    public void UpdateAudioMute()
+    {
+        for (int i = 0; i < BGMAudioSources.Length; i++)
+        {
+            BGMAudioSources[i].mute = CentralSetting.Instance.muteAudio;
+        }
+
+        SFXAudioSources.mute = CentralSetting.Instance.muteAudio;
+    }
 
     public void DrinkWaterSFX()
     {
