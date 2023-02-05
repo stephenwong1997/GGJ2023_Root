@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
         {
             if (mainCamera.transform.position.y <= upperBoundaryY && mainCamera.transform.position.y >= lowerBoundaryY)
             {
-                Vector3 moveTo = mainCamera.transform.position + Vector3.up * Input.mouseScrollDelta.y * Time.deltaTime * 1900;
+                Vector3 moveTo = mainCamera.transform.position + Vector3.up * Input.mouseScrollDelta.y * Time.deltaTime * 1000;
                 moveTo.z = -10;
                 mainCamera.transform.position = moveTo;
                 if (mainCamera.transform.position.y > upperBoundaryY)
