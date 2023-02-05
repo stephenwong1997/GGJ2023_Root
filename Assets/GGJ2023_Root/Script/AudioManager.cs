@@ -123,7 +123,7 @@ public class AudioManager : MonoBehaviour
 
     public void TurnOnTrackVolume(int trackNum)
     {
-        BGMAudioSources[trackNum].volume = 1;
+        BGMAudioSources[trackNum].volume = 0.33f;
 
         if (BGMAudioSources[trackNum].clip != null)
             Debug.Log($"AudioManager.TurnOnTrackVolume(): Song name: {BGMAudioSources[trackNum].clip.name}");
